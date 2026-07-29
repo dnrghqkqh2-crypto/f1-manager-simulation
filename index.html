@@ -520,6 +520,12 @@ select, input[type=text]{
 .wd-driver-block{ margin-bottom:10px; padding-bottom:10px; border-bottom:1px dashed var(--line); }
 .wd-driver-block:last-child{ border-bottom:none; margin-bottom:0; padding-bottom:0; }
 .wd-meta{ font-size:11px; color:var(--text-2); margin-bottom:4px; }
+
+/* ---------- 팀/드라이버 이름 편집 ---------- */
+.roster-team-row{ background:var(--bg-2); border:1px solid var(--line); border-radius:8px; padding:12px 14px; margin-bottom:10px; }
+.roster-team-row input.roster-team-input{ font-weight:800; font-size:14px; width:100%; padding:8px 10px; margin-bottom:8px; background:var(--bg-1); border:1px solid var(--line); border-radius:5px; color:var(--text-0); }
+.roster-driver-inputs{ display:flex; gap:8px; }
+.roster-driver-inputs input{ flex:1; padding:7px 9px; background:var(--bg-3); border:1px solid var(--line); border-radius:5px; color:var(--text-0); font-size:12px; }
 #weeklyDashboardCloseBtn{ width:100%; padding:12px; margin-top:16px; background:var(--red); border:none; color:#fff; font-weight:800; border-radius:6px; font-size:14px; }
 </style>
 </head>
@@ -536,6 +542,7 @@ select, input[type=text]{
     <button data-view="mail">✉️ 메일함 <span id="mailBadge" style="display:none;background:var(--red);color:#fff;border-radius:8px;padding:0 6px;font-size:10px;">0</span></button>
     <button data-view="championship">🏆 챔피언십</button>
     <button data-view="trophy">🏆 트로피</button>
+    <button data-view="roster">✏️ 이름 편집</button>
   </nav>
   <div class="header-spacer"></div>
   <button id="muteBtn" title="효과음 켜기/끄기">🔊</button>
@@ -798,6 +805,16 @@ select, input[type=text]{
 <!-- ========================= 트로피 진열장 VIEW ========================= -->
 <div id="view-trophy" class="view">
   <div class="mgmt-grid" id="trophyCabinetBody"></div>
+</div>
+
+<!-- ========================= 팀/드라이버 이름 편집 VIEW ========================= -->
+<div id="view-roster" class="view">
+  <div class="card">
+    <h4>✏️ 팀 / 드라이버 이름 편집</h4>
+    <p style="color:var(--text-2); font-size:12px; margin-bottom:12px;">모든 팀명과 드라이버 이름을 자유롭게 원하는 이름으로 바꿀 수 있습니다. 수정 후 아래 저장 버튼을 눌러야 반영됩니다.</p>
+    <div id="rosterEditorBody"></div>
+    <button id="rosterSaveBtn" style="width:100%; padding:12px; margin-top:14px; background:var(--green); border:none; color:#022; font-weight:800; border-radius:6px; font-size:14px;">💾 이름 저장</button>
+  </div>
 </div>
 
 <!-- ========================= 드라이버 프로필 모달 ========================= -->
@@ -1209,6 +1226,11 @@ const RD_CATS = {
 };
 function deltaText(delta){
   return Object.keys(delta).map(k=>`${STAT_LABELS_KR[k]} +${delta[k]}`).join(', ');
+}
+
+// 유저가 자유 입력한 팀/드라이버 이름 등을 innerHTML에 안전하게 꽂아 넣기 위한 이스케이프
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
 // 초 단위 시간을 "1:23.456" 형식의 랩타임 문자열로 변환
@@ -2393,7 +2415,7 @@ const RACES_PER_SEASON = TRACK_ORDER.length;
 // 실제 UGP 포인트 시스템: 1~10위 순위별 포인트 + 완주 톱10 안에서 패스티스트 랩 기록 시 +1점
 const UGP_POINTS = [25,18,15,12,10,8,6,4,2,1];
 function pointsForPosition(pos){ return pos>=1 && pos<=UGP_POINTS.length ? UGP_POINTS[pos-1] : 0; }
-const SAVE_KEY = 'f1managerSim_save_v1';
+const SAVE_KEY = 'ugpManagerSim_save_v1';
 
 // 레이스 주말 흐름: FP1 → FP2 → FP3 → (카드 이벤트) → Q1 → Q2 → Q3(녹아웃 퀄리파잉) → 메인 레이스
 // Q1/Q2/Q3는 실제 UGP처럼 시간 제한(초) 세션이며, 매 세션 종료 시 하위 5명이 탈락하고
@@ -3202,9 +3224,12 @@ const Game = {
       return s;
     };
 
-    data.teams.forEach(saved=>{
-      const team = this.teams.find(t=>t.name===saved.name);
+    data.teams.forEach((saved,teamIdx)=>{
+      // 팀명은 유저가 자유롭게 수정할 수 있으므로(이름 편집 기능), name이 아니라 항상 고정된
+      // 배열 순서(TEAM_DATA 선언 순서)로 매칭한다 — 이름이 바뀌어도 세이브/로드가 깨지지 않도록.
+      const team = this.teams[teamIdx];
       if(!team) return;
+      team.name = saved.name || team.name;
       team.budget = saved.budget; team.rdPoints = saved.rdPoints; team.trainingPoints = saved.trainingPoints;
       team.rd = saved.rd; team.carPerf = saved.carPerf;
       team.politics = saved.politics!=null ? saved.politics : 20;
@@ -3397,8 +3422,10 @@ const Game = {
         }
         if(btn.dataset.view==='championship') this.renderChampionship();
         if(btn.dataset.view==='trophy') this.renderTrophyCabinet();
+        if(btn.dataset.view==='roster') this.renderRosterEditor();
       });
     });
+    document.getElementById('rosterSaveBtn').addEventListener('click', ()=> this.saveRosterNames());
   },
 
   bindRaceControls(){
@@ -4925,6 +4952,41 @@ const Game = {
       <div class="card"><h4>🏆 컨스트럭터 챔피언십(GPCC) 우승 이력</h4>${wccHtml}</div>
       <div class="card" style="grid-column:1/-1;"><h4>🥇 레이스 우승 이력</h4>${winsHtml}</div>
     `;
+  },
+
+  // 팀/드라이버 이름 자유 편집 — 저장/불러오기는 이름이 아니라 고정된 배열 순서로 매칭되므로
+  // (loadGame()의 team.name = saved.name 복원 참고) 이름을 자유롭게 바꿔도 세이브가 깨지지 않는다.
+  renderRosterEditor(){
+    const body = document.getElementById('rosterEditorBody');
+    if(!body) return;
+    body.innerHTML = this.teams.map((team,ti)=>`
+      <div class="roster-team-row">
+        <input type="text" class="roster-team-input" data-team-name="${ti}" value="${escapeHtml(team.name)}" maxlength="40">
+        <div class="roster-driver-inputs">
+          ${team.drivers.map((d,di)=>`<input type="text" data-driver-name="${ti}:${di}" value="${escapeHtml(d.name)}" maxlength="30">`).join('')}
+        </div>
+      </div>
+    `).join('');
+  },
+  saveRosterNames(){
+    document.querySelectorAll('#rosterEditorBody input[data-team-name]').forEach(inp=>{
+      const ti = parseInt(inp.dataset.teamName);
+      const val = inp.value.trim();
+      if(val && this.teams[ti]) this.teams[ti].name = val;
+    });
+    document.querySelectorAll('#rosterEditorBody input[data-driver-name]').forEach(inp=>{
+      const [ti,di] = inp.dataset.driverName.split(':').map(Number);
+      const val = inp.value.trim();
+      if(val && this.teams[ti] && this.teams[ti].drivers[di]) this.teams[ti].drivers[di].name = val;
+    });
+    // 이름이 표시되는 다른 화면들도 즉시 갱신
+    this.renderRosterEditor();
+    this.populateTeamSelect();
+    this.renderRD(); this.renderTransfer(); this.renderTraining(); this.renderVehicleTab();
+    this.renderChampionship(); this.renderTrophyCabinet(); this.renderWeekendBar();
+    if(this.engine){ this.drawTrack(); this.renderStandings(); this.renderTelemetry(); }
+    this.saveGame();
+    alert('이름이 저장되었습니다.');
   },
 
   generateRumorMail(){
