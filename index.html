@@ -460,12 +460,21 @@ select, input[type=text]{
   align-items:center; justify-content:center;
 }
 #formationLapOverlay.show{ display:flex; }
-#formationLapModal{ width:min(460px,92vw); background:var(--bg-1); border:2px solid var(--blue); border-radius:10px; padding:22px; }
+#formationLapModal{ width:min(520px,92vw); max-height:90vh; overflow-y:auto; background:var(--bg-1); border:2px solid var(--blue); border-radius:10px; padding:22px; }
 #formationLapModal h2{ margin:0 0 8px; font-size:17px; }
 .formation-choice{ display:block; width:100%; text-align:left; padding:12px 14px; margin-top:10px; background:var(--bg-2); border:1px solid var(--line); border-radius:8px; color:var(--text-0); }
 .formation-choice:hover{ border-color:var(--blue); background:var(--bg-3); }
+.formation-choice.selected{ border-color:var(--blue); background:var(--bg-3); box-shadow:inset 0 0 0 1px var(--blue); }
 .formation-choice b{ display:block; margin-bottom:3px; }
 .formation-choice span{ font-size:11px; color:var(--text-2); }
+.starting-tyre-row{ margin-bottom:10px; }
+.starting-tyre-row .stt-driver{ font-size:12px; font-weight:700; margin-bottom:5px; }
+.starting-tyre-buttons{ display:flex; gap:6px; flex-wrap:wrap; }
+.starting-tyre-buttons button{ flex:1; min-width:70px; padding:8px 6px; font-size:11px; font-weight:700; border-radius:5px; border:1px solid var(--line); background:var(--bg-2); color:var(--text-0); text-align:center; }
+.starting-tyre-buttons button small{ display:block; font-weight:400; color:var(--text-2); font-size:9px; margin-top:2px; }
+.starting-tyre-buttons button.selected{ border-color:var(--green); box-shadow:inset 0 0 0 1px var(--green); }
+.starting-tyre-buttons button:disabled{ opacity:.35; cursor:not-allowed; }
+#raceReadyBtn{ width:100%; padding:12px; margin-top:16px; background:var(--red); border:none; color:#fff; font-weight:800; border-radius:6px; font-size:14px; }
 
 /* ---------- 결정적 순간 자동 일시정지(Decision Time) 모달 ---------- */
 #decisionPauseOverlay{
@@ -574,7 +583,10 @@ select, input[type=text]{
 .roster-team-row{ background:var(--bg-2); border:1px solid var(--line); border-radius:8px; padding:12px 14px; margin-bottom:10px; }
 .roster-team-row input.roster-team-input{ font-weight:800; font-size:14px; width:100%; padding:8px 10px; margin-bottom:8px; background:var(--bg-1); border:1px solid var(--line); border-radius:5px; color:var(--text-0); }
 .roster-driver-inputs{ display:flex; gap:8px; }
-.roster-driver-inputs input{ flex:1; padding:7px 9px; background:var(--bg-3); border:1px solid var(--line); border-radius:5px; color:var(--text-0); font-size:12px; }
+.roster-driver-pair{ flex:1; display:flex; gap:4px; }
+.roster-driver-pair input{ padding:7px 9px; background:var(--bg-3); border:1px solid var(--line); border-radius:5px; color:var(--text-0); font-size:12px; }
+.roster-driver-pair input[data-driver-name]{ flex:1; min-width:0; }
+.roster-driver-pair input[data-driver-code]{ width:52px; flex:none; text-align:center; text-transform:uppercase; }
 #weeklyDashboardCloseBtn{ width:100%; padding:12px; margin-top:16px; background:var(--red); border:none; color:#fff; font-weight:800; border-radius:6px; font-size:14px; }
 </style>
 </head>
@@ -789,6 +801,10 @@ select, input[type=text]{
       <div id="marketDrivers"></div>
     </div>
     <div class="card">
+      <h4>🕊️ 은퇴 선수 복귀 협상 (Free Agent)</h4>
+      <div id="retiredDrivers"></div>
+    </div>
+    <div class="card">
       <h4>💰 시즌 스폰서 계약</h4>
       <div id="sponsorInfo"></div>
     </div>
@@ -952,10 +968,14 @@ select, input[type=text]{
 <!-- ========================= 포메이션 랩 세팅(레이스 시작 직전) ========================= -->
 <div id="formationLapOverlay">
   <div id="formationLapModal">
-    <h2>🏁 포메이션 랩 세팅</h2>
-    <p style="color:var(--text-2); font-size:13px; margin-bottom:14px;">그리드로 향하는 포메이션 랩입니다. 스타트 접근 방식을 선택하세요 — 선택은 두 드라이버 모두에게 적용되며, Turn 1 진입 결과에 직접 영향을 줍니다.</p>
+    <h2>🏁 레이스 시작 전 준비</h2>
+    <p style="color:var(--text-2); font-size:13px; margin-bottom:10px;">그리드로 향하는 포메이션 랩입니다. 스타트 접근 방식과 두 드라이버의 스타팅 타이어를 정한 뒤 준비를 완료하세요.</p>
+    <h4 style="margin:14px 0 6px; font-size:13px; color:var(--text-1);">포메이션 랩 세팅</h4>
     <button class="formation-choice" data-choice="warmup"><b>🔥 타이어 열 올리기</b><span>스타트 그립 극대화로 Turn 1 진입이 유리해지지만, 타이어 초기 마모가 약간 증가합니다.</span></button>
     <button class="formation-choice" data-choice="clutch"><b>⚙️ 클러치 / 연료 관리</b><span>스타트 반응이 안정되어 대형 실수 위험이 줄고, 연료를 약간 절약합니다.</span></button>
+    <h4 style="margin:14px 0 6px; font-size:13px; color:var(--text-1);">스타팅 타이어 선택</h4>
+    <div id="startingTyreBody"></div>
+    <button id="raceReadyBtn">✅ 준비 완료 — 그리드로 이동</button>
   </div>
 </div>
 
@@ -1288,7 +1308,8 @@ const COMPOUNDS = {
 };
 // 드라이버 1인당 레이스 주말(FP1~메인 레이스) 전체에 걸쳐 공급되는 한정된 타이어 세트 수.
 // 세트별 마모도는 주말 내내 이어지며, 소모된 세트는 주말이 끝나야 반납된다.
-const TIRE_SET_ALLOCATION = { Soft:8, Medium:3, Hard:2, Intermediate:4, Wet:2 };
+// 전략성 강화를 위해 세트 수를 대폭 축소 — 이 한정된 수량 안에서 FP1~레이스까지 나눠 써야 한다.
+const TIRE_SET_ALLOCATION = { Soft:2, Medium:2, Hard:1, Intermediate:2, Wet:2 };
 // 시즌 당 그리드 페널티 없이 교체 가능한 파워유닛 허용 수량(0번째 포함 최초 장착 제외, 이후 교체 횟수 기준)
 const POWER_UNIT_SEASON_QUOTA = 4;
 // 이번 주말에 배정된 타이어 세트 풀을 초기화한다(각 컴파운드별로 배정된 세트 수만큼 100% 신품 배열 생성).
@@ -2140,14 +2161,14 @@ class RaceEngine{
               // 부품 손상 딜레마에서 "피트인 부품 교체"를 선택했다면, 타이어 교체 후 이어서 부품 수리
               // 시간(약 10~15초)이 추가로 소요된다.
               if(car.pendingRepair){ car.pitPhase='repairing'; car.pitPhaseTimer=10+Math.random()*5; }
-              else { car.pitPhase='exiting'; car.pitPhaseTimer=4; }
+              else { car.pitPhase='exiting'; car.pitPhaseTimer=12; }
             }
             break;
           case 'repairing':
             car.pitPhaseTimer -= dt;
             if(car.pitPhaseTimer<=0){
               car.frontWingDamage = 0; car.sidepodDamage = 0; car.pendingRepair = false;
-              car.pitPhase='exiting'; car.pitPhaseTimer=4;
+              car.pitPhase='exiting'; car.pitPhaseTimer=12;
             }
             break;
           case 'exiting':
@@ -2243,7 +2264,9 @@ class RaceEngine{
       const enragedFailMult = car.enraged ? 3 : 1;
       // 손상된 부품(프론트 윙/사이드팟)을 수리하지 않고 강행 운행하면 구조적으로 추가 사고 위험이 붙는다.
       const damageFailMult = 1 + (car.frontWingDamage+car.sidepodDamage)/250;
-      if(Math.random() < 0.00022*dt*tierFailMult*wearFailMult*enragedFailMult*damageFailMult){
+      // [버그 수정] 기본 확률이 너무 높아 한 레이스에 DNF가 과도하게 쏟아지는 문제 — 실제 UGP처럼
+      // 레이스당 평균 1~2건 수준이 되도록 기준 확률을 대폭 낮췄다(약 1/3 수준으로 하향).
+      if(Math.random() < 0.00008*dt*tierFailMult*wearFailMult*enragedFailMult*damageFailMult){
         const roll = Math.random();
         if(roll < 0.28){
           // 엔진 트러블 → 리타이어(DNF)
@@ -2375,7 +2398,12 @@ class RaceEngine{
         const entryAbsDist = (lapAtEntry + this.track.pitEntryProgress) * this.track.total;
         if(prevDist < entryAbsDist && car.totalDistance >= entryAbsDist){
           car.pitRequested = false;
-          car.inPit = true; car.pitPhase = 'entering'; car.pitPhaseTimer = 4;
+          // [버그 수정] 진입/출차 구간이 너무 짧아(각 4초, 피트레인 속도로 실제 거리손실이 약 3.4초
+          // 상당에 불과) 전체 피트스톱의 거리 손실이 10초 안팎밖에 되지 않았다. 그 결과 피트아웃한
+          // 차량이 실제 순위/인터벌보다 훨씬 유리하게(원래 순위에 가깝게) 트랙에 복귀해버리는 것처럼
+          // 보이는 문제가 있었다. 실제 UGP 피트스톱의 체감 손실(약 20~25초)에 맞춰 진입/출차 구간을
+          // 각각 12초로 늘려, 타이어 교체 시간까지 합쳐 총 손실이 그 구간에 들어오도록 조정했다.
+          car.inPit = true; car.pitPhase = 'entering'; car.pitPhaseTimer = 12;
           // 피트 크루의 세부 훈련 스탯이 실전에 직접 반영된다: 타이어 교체 속도 스탯이 높을수록
           // 기본 교체 시간이 빨라지고, 정확도(실수 확률 감소) 스탯이 낮을수록 드물게 "실수"로 인한
           // 추가 지연이 발생한다 — 세 세부 스탯이 각각 다른 방식으로 체감되도록 분리 설계.
@@ -2658,6 +2686,8 @@ const Game = {
   offseasonDay: 1,        // 오프시즌 준비 세션 진행일(1~7)
   autoPlay: false,        // 전체 자동 진행(Auto-Play) on/off
   formationChoice: null,  // 이번 레이스의 포메이션 랩 세팅('warmup' | 'clutch') — Turn 1 결과에 직접 반영
+  startingTyreChoice: [null,null], // 두 드라이버의 스타팅 타이어 선택(컴파운드명)
+  retiredPool: [],       // 공식 은퇴한 드라이버 명단(자유계약) — 완전 삭제되지 않고 복귀 제안 대상으로 보존됨
   hallOfFame: [],         // 명예의 전당 — 커리어 동안의 기적적인 기록(역전 우승/최단 피트스톱/챔피언십 우승 등)
   careerFastestPitStop: Infinity, // 커리어 통산 최단 피트스톱 기록(초) — 명예의 전당 신기록 판정 기준
   radarState: null, // 레이더 차트 상태(직접 Canvas로 그림, 외부 라이브러리 불필요)
@@ -2967,8 +2997,13 @@ const Game = {
     }
     if(document.getElementById('formationLapOverlay').classList.contains('show')){
       this._autoPlayCooldownUntil = now+700;
-      const choices = document.querySelectorAll('#formationLapOverlay button[data-choice]');
-      choices[Math.floor(Math.random()*choices.length)]?.click();
+      // 포메이션 랩 선택 + 스타팅 타이어(기본값)까지 고른 뒤 준비 완료 버튼을 눌러 자동으로 진행한다.
+      if(!this.formationChoice){
+        const choices = document.querySelectorAll('#formationLapOverlay button[data-choice]');
+        choices[Math.floor(Math.random()*choices.length)]?.click();
+      } else {
+        document.getElementById('raceReadyBtn')?.click();
+      }
       return;
     }
     if(document.getElementById('decisionPauseOverlay').classList.contains('show')){
@@ -3218,31 +3253,76 @@ const Game = {
     }
     // B(직감에 맡기기)는 별도 처리 없음 — enraged 상태가 타이머 만료까지 그대로 유지된다.
   },
-  // 포메이션 랩 세팅 버튼은 정적 HTML이므로(모달을 매 레이스마다 새로 그리지 않음) 리스너를 init() 때
-  // 딱 한 번만 바인딩한다 — showFormationLapModal()을 호출할 때마다 다시 바인딩하면 레이스가 거듭될수록
-  // 클릭 리스너가 누적되어 효과가 중복 적용되는 버그가 생긴다.
+  // 포메이션 랩 세팅/레이스 준비 완료 버튼은 정적 HTML이므로(모달을 매 레이스마다 새로 그리지 않음)
+  // 리스너를 init() 때 딱 한 번만 바인딩한다 — 매번 다시 바인딩하면 레이스가 거듭될수록 클릭 리스너가
+  // 누적되어 효과가 중복 적용되는 버그가 생긴다. 스타팅 타이어 버튼은 세션마다 내용이 달라지므로
+  // renderStartingTyreBody()에서 매번 새로 그리고 그때그때 리스너를 붙인다.
   bindFormationLapControls(){
     document.querySelectorAll('#formationLapOverlay button[data-choice]').forEach(btn=>{
       btn.addEventListener('click', ()=>{
         this.formationChoice = btn.dataset.choice;
-        const myTeam = this.teams[this.playerTeamIdx];
-        myTeam.drivers.forEach(d=>{
-          const car = this.engine.carForDriverSlot(myTeam.drivers.indexOf(d));
-          if(!car) return;
-          if(this.formationChoice==='warmup'){
-            // 타이어 열 올리기: 스타트 그립 극대화(Turn 1 유리), 대신 초기 타이어 마모 소폭 증가
-            car.tireWear = Math.max(0, car.tireWear - (1+Math.random()));
-          } else {
-            // 클러치/연료 관리: 스타트 반응 안정화(대형 실수 위험 감소), 연료 소폭 절약
-            car.fuel = Math.min(100, car.fuel + 2);
-          }
-        });
-        document.getElementById('formationLapOverlay').classList.remove('show');
+        document.querySelectorAll('#formationLapOverlay button[data-choice]').forEach(b=> b.classList.toggle('selected', b===btn));
       });
+    });
+    document.getElementById('raceReadyBtn').addEventListener('click', ()=>{
+      const myTeam = this.teams[this.playerTeamIdx];
+      myTeam.drivers.forEach((d,slot)=>{
+        const car = this.engine.carForDriverSlot(slot);
+        if(!car) return;
+        // 포메이션 랩 세팅 효과 적용
+        if(this.formationChoice==='warmup'){
+          // 타이어 열 올리기: 스타트 그립 극대화(Turn 1 유리), 대신 초기 타이어 마모 소폭 증가
+          car.tireWear = Math.max(0, car.tireWear - (1+Math.random()));
+        } else if(this.formationChoice==='clutch'){
+          // 클러치/연료 관리: 스타트 반응 안정화(대형 실수 위험 감소), 연료 소폭 절약
+          car.fuel = Math.min(100, car.fuel + 2);
+        }
+        // 스타팅 타이어 선택 적용: 한정된 세트 풀에서 선택한 컴파운드의 가장 신선한 세트를 장착한다.
+        const chosenCompound = this.startingTyreChoice[slot] || car.compound;
+        const idx = pickBestTireSetIdx(d, chosenCompound);
+        if(idx>=0){
+          car.compound = chosenCompound; car.pendingCompound = chosenCompound;
+          car.mountedSet = { compound:chosenCompound, idx };
+          car.tireWear = d.tireSets[chosenCompound][idx];
+          car.tireTemp = COMPOUNDS[chosenCompound].baseTemp;
+        }
+      });
+      document.getElementById('formationLapOverlay').classList.remove('show');
     });
   },
   showFormationLapModal(){
+    this.formationChoice = null;
+    this.startingTyreChoice = [null,null];
+    document.querySelectorAll('#formationLapOverlay button[data-choice]').forEach(b=> b.classList.remove('selected'));
+    this.renderStartingTyreBody();
     document.getElementById('formationLapOverlay').classList.add('show');
+  },
+  // 레이스 시작 전 각 드라이버의 스타팅 타이어(Soft/Medium/Hard/Intermediate/Wet)를 선택하는 UI.
+  // 한정된 타이어 세트 풀 안에서 실제 남은 수량을 확인하며 고를 수 있다(0장 남은 컴파운드는 비활성화).
+  renderStartingTyreBody(){
+    const body = document.getElementById('startingTyreBody');
+    if(!body) return;
+    const myTeam = this.teams[this.playerTeamIdx];
+    const compoundLabels = {Soft:'소프트', Medium:'미디엄', Hard:'하드', Intermediate:'인터미디엄', Wet:'풀웻'};
+    // 비 예보/실제 강우 여부에 따라 기본 추천 컴파운드를 다르게 잡는다.
+    const rainy = this.engine && (this.engine.weather==='Rain');
+    body.innerHTML = myTeam.drivers.map((d,slot)=>{
+      if(!this.startingTyreChoice[slot]) this.startingTyreChoice[slot] = rainy ? 'Intermediate' : 'Medium';
+      const buttons = Object.keys(COMPOUNDS).map(c=>{
+        const sets = d.tireSets ? d.tireSets[c] : null;
+        const usable = sets ? sets.filter(w=>w>0.5).length : 0;
+        const selected = this.startingTyreChoice[slot]===c;
+        return `<button data-tyre-slot="${slot}" data-tyre-compound="${c}" class="${selected?'selected':''}" ${usable===0?'disabled':''}>${compoundLabels[c]}<small>${usable}세트</small></button>`;
+      }).join('');
+      return `<div class="starting-tyre-row"><div class="stt-driver">${d.name}</div><div class="starting-tyre-buttons">${buttons}</div></div>`;
+    }).join('');
+    document.querySelectorAll('#startingTyreBody button[data-tyre-compound]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const slot = parseInt(btn.dataset.tyreSlot);
+        this.startingTyreChoice[slot] = btn.dataset.tyreCompound;
+        this.renderStartingTyreBody();
+      });
+    });
   },
 
   /* ---------------- 프랙티스/퀄리파잉 세션 종료 처리 ---------------- */
@@ -3568,6 +3648,9 @@ const Game = {
       marketPool: this.marketPool ? this.marketPool.map(d=>({
         name:d.name, code:d.code, number:d.number, stats:d.stats, age:d.age, height:d.height, morale:d.morale, setup:d.setup,
       })) : null,
+      retiredPool: this.retiredPool ? this.retiredPool.map(d=>({
+        name:d.name, code:d.code, number:d.number, stats:d.stats, age:d.age, height:d.height, morale:d.morale, setup:d.setup,
+      })) : null,
       academyScoutPool: this.academyScoutPool ? this.academyScoutPool.map(s=>({
         cost:s.cost, name:s.driver.name, code:s.driver.code, number:s.driver.number, stats:s.driver.stats,
         age:s.driver.age, height:s.driver.height, potential:s.driver.potential,
@@ -3694,6 +3777,12 @@ const Game = {
       drv.setup = sd.setup || {frontWing:5, suspension:5};
       return drv;
     }) : null;
+    this.retiredPool = Array.isArray(data.retiredPool) ? data.retiredPool.map(sd=>{
+      const drv = new Driver(sd.name, sd.code, sd.number, sd.stats, sd.age, sd.height);
+      drv.morale = sd.morale!=null ? sd.morale : 78;
+      drv.setup = sd.setup || {frontWing:5, suspension:5};
+      return drv;
+    }) : [];
     this.academyScoutPool = Array.isArray(data.academyScoutPool) ? data.academyScoutPool.map(s=>({
       cost:s.cost, driver:new Driver(s.name, s.code, s.number, s.stats, s.age, s.height, s.potential),
     })) : null;
@@ -3745,6 +3834,7 @@ const Game = {
     this.engineerPool = null; this.pitCrewPool = null;
     this.trophies = { wdc:[], wcc:[], raceWins:[] }; this.offseasonDay = 1;
     this.hallOfFame = []; this.careerFastestPitStop = Infinity;
+    this.retiredPool = [];
     this.weekendStage = 'FP1';
     this.qualifyingOrder = null; this.qualiParticipants = null; this.qualiEliminated = {Q1:[], Q2:[]};
     this.drawnCard = null; this.cardRevert = null; this.pitSpeedMult = 1; this.wearMult = 1;
@@ -4142,11 +4232,11 @@ const Game = {
     const track = this.engine.track;
     const boxP = track.pitBoxProgress;
     if(car.pitPhase==='entering'){
-      const t = Math.max(0, Math.min(1, 1-(car.pitPhaseTimer/4)));
+      const t = Math.max(0, Math.min(1, 1-(car.pitPhaseTimer/12)));
       return boxP*t;
     }
     if(car.pitPhase==='exiting'){
-      const t = Math.max(0, Math.min(1, 1-(car.pitPhaseTimer/4)));
+      const t = Math.max(0, Math.min(1, 1-(car.pitPhaseTimer/12)));
       return boxP+(1-boxP)*t;
     }
     return boxP; // 'tirechange' 단계: 피트박스에 정차한 상태
@@ -4293,8 +4383,10 @@ const Game = {
       const isPlayer = (car.team===myTeam); // 내 팀 소속 드라이버 2명 모두 강조 표시
       const comp = COMPOUNDS[car.compound];
       // 방송 패널은 선두와의 누적 GAP 대신 바로 앞차와의 INTERVAL을 소수점 3자리까지 표기.
-      // 1위 드라이버는 현재까지의 레이스 경과 시간을 기준 타임으로 표시한다.
-      let gapStr = pos===1 ? formatLapTime(this.engine.elapsed) : `+${interval.toFixed(3)}s`;
+      // [버그 수정] 1위 드라이버 자리에 "레이스 전체 누적 경과 시간"이 표시되던 문제 — 실제 UGP
+      // 타이밍 패널처럼 1위는 이번 세션의 최단 랩타임(Best Lap, 없으면 직전 랩타임)을 기준으로 표시한다.
+      let p1RefTime = isFinite(car.personalBestLapTime) ? car.personalBestLapTime : car.lastLapTime;
+      let gapStr = pos===1 ? (p1RefTime!=null ? formatLapTime(p1RefTime) : 'NO TIME') : `+${interval.toFixed(3)}s`;
       let statusTag='';
       if(car.status==='dns'){ gapStr='DNS'; statusTag='<span class="status-tag out">DNS</span>'; }
       else if(car.status==='retired'){ gapStr='DNF'; statusTag='<span class="status-tag out">OUT</span>'; }
@@ -4503,10 +4595,14 @@ const Game = {
         : myFinalPositions.some(p=>p<=5);
       if(achieved){
         myTeam.budget += chosen.reward;
+        // 스폰서와의 약속을 지키는 것도 이사회 신뢰로 이어진다(소폭).
+        myTeam.boardTrust = Math.min(100, myTeam.boardTrust+2);
         this.addMail('스폰서', `[미션 성공] ${chosen.sponsor}`, `서브 스폰서 미션(${chosen.label})을 달성해 보너스 ${chosen.reward}M$를 획득했습니다!`);
       } else {
+        myTeam.boardTrust = Math.max(0, myTeam.boardTrust-1);
         this.addMail('스폰서', `[미션 실패] ${chosen.sponsor}`, `이번 주말 서브 스폰서 미션(${chosen.label})을 달성하지 못했습니다.`);
       }
+      this.checkBoardTrustGameOver();
     }
     this.renderRD(); this.renderTransfer(); this.renderTraining(); this.renderVehicleTab();
 
@@ -4678,6 +4774,7 @@ const Game = {
   startOffseason(){
     this.recordSeasonTrophies();
     this.checkSeasonGoal();
+    this.processAgingAndRetirement();
     // PDS 시즌 마감: 참가 중이던 유망주들의 최종 성적을 메일로 요약하고, 다음 시즌을 위해 등록 상태를 초기화한다.
     const myTeam = this.teams[this.playerTeamIdx];
     (myTeam.academy||[]).forEach(d=>{
@@ -4706,6 +4803,58 @@ const Game = {
     });
     this.offseasonDay = 1;
     this.showOffseasonScreen();
+  },
+  // 드라이버 에이징 커브 & 은퇴 시스템 — 시즌 종료마다 전 팀의 모든 드라이버 나이를 1살 올리고,
+  // 34세 이상이면 능력치가 서서히 하락한다. 나이가 많거나(특히 38세+) 팀 만족도가 낮은 드라이버는
+  // 확률적으로 공식 은퇴를 선언하며, 이때 리저브 승격 또는 자유계약 긴급 영입으로 공석을 채운다.
+  processAgingAndRetirement(){
+    if(!this.retiredPool) this.retiredPool = [];
+    this.teams.forEach(team=>{
+      team.drivers.slice().forEach((d,slot)=>{
+        d.age += 1;
+        if(d.age >= 34){
+          const declinePts = d.age - 33;
+          ['speed','tireManagement','overtaking','consistency','defense','reaction'].forEach(k=>{
+            d.stats[k] = Math.max(30, d.stats[k] - Math.round(Math.random()*declinePts*0.5));
+          });
+        }
+        // 은퇴 확률: 나이가 많을수록 급격히 증가하고, 팀 만족도가 낮으면(34세 이상 한정) 추가로 붙는다.
+        const ageRisk = d.age>=40 ? 0.5 : d.age>=38 ? 0.28 : d.age>=36 ? 0.14 : d.age>=34 ? 0.05 : 0;
+        const moraleRisk = (d.age>=34 && d.morale<40) ? 0.12 : 0;
+        if(ageRisk+moraleRisk>0 && Math.random() < ageRisk+moraleRisk){
+          this.retireDriver(team, slot);
+        }
+      });
+    });
+  },
+  // 드라이버 한 명을 공식 은퇴 처리한다: 은퇴/무소속 리스트에 보존해두고(완전 삭제 아님), 팀의 공석은
+  // 리저브 우선 승격 → 없으면 자유계약 시장에서 긴급 영입 순으로 채운다.
+  retireDriver(team, slot){
+    const d = team.drivers[slot];
+    if(!this.retiredPool) this.retiredPool = [];
+    d.contractYears = 0; d.contractSalary = 0;
+    this.retiredPool.push(d);
+    const isPlayer = team===this.teams[this.playerTeamIdx];
+    let replacement = null;
+    if(team.reserves && team.reserves.length){
+      replacement = team.reserves.shift();
+      replacement.role = d.role; replacement.contractYears = 2; replacement.contractSalary = calcSalary(replacement);
+      team.drivers[slot] = replacement;
+    } else {
+      if(!this.marketPool) this.marketPool = [];
+      const emergency = this.marketPool.find(x=>x!==d);
+      if(emergency){
+        const idx = this.marketPool.indexOf(emergency);
+        this.marketPool.splice(idx,1);
+        emergency.role = d.role; emergency.contractYears = 1; emergency.contractSalary = calcSalary(emergency);
+        team.drivers[slot] = emergency;
+        replacement = emergency;
+      }
+    }
+    if(isPlayer){
+      const repText = replacement ? `공석은 ${replacement.name} 선수로 채워졌습니다.` : `아직 마땅한 대체 자원을 찾지 못했습니다 — 이적시장에서 직접 영입해주세요.`;
+      this.addMail('이사회', `[공식 은퇴] ${d.name}`, `${d.name} 선수(${d.age}세)가 시즌 종료 후 공식 은퇴를 선언했습니다.\n${repText}\n은퇴한 선수는 자유계약(Free Agent) 명단에 보존되어, 이적시장 탭에서 언제든 복귀 제안을 넣을 수 있습니다.`);
+    }
   },
   // 시즌 종료 시점(챔피언십 포인트 초기화 전)의 컨스트럭터 순위를 시즌 목표와 비교해 이사회 신뢰도를
   // 갱신하고, 다음 시즌의 목표/ATR 핸디캡을 이번 시즌 최종 순위 기준으로 다시 배정한다.
@@ -5475,11 +5624,17 @@ const Game = {
   renderRosterEditor(){
     const body = document.getElementById('rosterEditorBody');
     if(!body) return;
+    // [버그 수정] Live Timing 패널 등 방송 UI는 드라이버의 전체 이름(name)이 아니라 3글자 코드(code)를
+    // 표시한다. 예전에는 이름 편집기에 코드 입력란이 없어서, 이름을 바꿔도 코드가 그대로 남아 있어
+    // 방송 화면에는 변경이 반영되지 않은 것처럼 보이는 버그가 있었다. 이제 코드도 함께 편집 가능하다.
     body.innerHTML = this.teams.map((team,ti)=>`
       <div class="roster-team-row">
         <input type="text" class="roster-team-input" data-team-name="${ti}" value="${escapeHtml(team.name)}" maxlength="40">
         <div class="roster-driver-inputs">
-          ${team.drivers.map((d,di)=>`<input type="text" data-driver-name="${ti}:${di}" value="${escapeHtml(d.name)}" maxlength="30">`).join('')}
+          ${team.drivers.map((d,di)=>`<div class="roster-driver-pair">
+            <input type="text" data-driver-name="${ti}:${di}" value="${escapeHtml(d.name)}" maxlength="30" placeholder="드라이버 이름">
+            <input type="text" data-driver-code="${ti}:${di}" value="${escapeHtml(d.code)}" maxlength="3" placeholder="코드" title="Live Timing에 표시되는 3글자 코드">
+          </div>`).join('')}
         </div>
       </div>
     `).join('');
@@ -5494,6 +5649,12 @@ const Game = {
       const [ti,di] = inp.dataset.driverName.split(':').map(Number);
       const val = inp.value.trim();
       if(val && this.teams[ti] && this.teams[ti].drivers[di]) this.teams[ti].drivers[di].name = val;
+    });
+    // 코드(Live Timing 표기용 3글자 약어)도 함께 저장한다.
+    document.querySelectorAll('#rosterEditorBody input[data-driver-code]').forEach(inp=>{
+      const [ti,di] = inp.dataset.driverCode.split(':').map(Number);
+      const val = inp.value.trim().toUpperCase().slice(0,3);
+      if(val && this.teams[ti] && this.teams[ti].drivers[di]) this.teams[ti].drivers[di].code = val;
     });
     // 이름이 표시되는 다른 화면들도 즉시 갱신
     this.renderRosterEditor();
@@ -5858,6 +6019,67 @@ const Game = {
         this.addMail("이사회", "이적 승인", `${d.name} 선수 영입이 승인되었습니다(${offeredYears}년 · ${offeredSalary}M$). ${replacedMid?replacedMid.name+' 선수는 리저브로 전환됩니다. ':''}시즌 잔여 예산: ${team.budget.toFixed(0)}M$`);
         this.renderTransfer();
         this.newEngine();
+        this.saveGame();
+      });
+    });
+
+    // 은퇴 선수 복귀(Un-retire) 협상: 은퇴/무소속 명단에 보존된 드라이버에게 계약금·연봉을 제시해
+    // 현역(기존 드라이버 대체) 또는 리저브로 재영입을 제안할 수 있다. 42세 이상은 조건과 무관하게 거절한다.
+    if(!this.retiredPool) this.retiredPool = [];
+    document.getElementById('retiredDrivers').innerHTML = this.retiredPool.length ? this.retiredPool.map((d,i)=>{
+      const salary = Math.max(0.5, Math.round(calcSalary(d)*0.7*10)/10); // 전성기 지난 베테랑이라 시세는 다소 낮게 형성
+      const tooOld = d.age >= 42;
+      return `<div class="market-driver negotiation-row">
+        <div><div class="mname">${d.name} (${d.age}세)${tooOld?' <span style="color:var(--red); font-size:10px;">고령·복귀 의사 없음</span>':''}</div>
+        <div class="msub">OVR ${d.overall()} · SPD ${d.stats.speed} · OVT ${d.stats.overtaking} · 예상 시세 ${salary}M$</div></div>
+        <div class="negotiation-controls">
+          <select data-i="${i}" class="slotSelect" ${tooOld?'disabled':''}>
+            ${team.drivers.map((td,si)=>`<option value="${si}">${td.name} 대체</option>`).join('')}
+            <option value="reserve">리저브로 영입</option>
+          </select>
+          <label>계약 기간 <select data-years-for="${i}" class="yearsSelect" ${tooOld?'disabled':''}>
+            <option value="1">1년</option><option value="2" selected>2년</option><option value="3">3년</option>
+          </select></label>
+          <label>제시 연봉 <input type="number" data-salary-for="${i}" class="salaryInput" value="${salary}" min="0.5" step="0.5" style="width:64px;" ${tooOld?'disabled':''}>M$</label>
+          <button data-i="${i}" ${tooOld?'disabled':''}>복귀 제안</button>
+        </div>
+      </div>`;
+    }).join('') : `<p style="color:var(--text-2); font-size:12px;">아직 은퇴한 선수가 없습니다.</p>`;
+    document.querySelectorAll('#retiredDrivers button').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const i = parseInt(btn.dataset.i);
+        const d = this.retiredPool[i];
+        if(!d) return;
+        const slotSel = document.querySelector(`#retiredDrivers .slotSelect[data-i="${i}"]`);
+        const yearsSel = document.querySelector(`#retiredDrivers select[data-years-for="${i}"]`);
+        const salaryInput = document.querySelector(`#retiredDrivers input[data-salary-for="${i}"]`);
+        const slotVal = slotSel.value;
+        const offeredYears = parseInt(yearsSel.value);
+        const offeredSalary = Math.max(0.5, parseFloat(salaryInput.value)||calcSalary(d));
+        if(team.budget < offeredSalary){ alert('예산이 부족합니다. (제시 연봉 '+offeredSalary+'M$)'); return; }
+        // 은퇴자는 현역 복귀 결정에 좀 더 신중하다 — 동일한 협상 알고리즘에 추가 페널티를 적용한다.
+        const chance = offerAcceptChance(team, d, offeredSalary, offeredYears) * 0.75;
+        if(Math.random() > chance){
+          this.addMail('이적 시장', `[복귀 거절] ${d.name}`, `${d.name} 선수가 ${team.name}의 복귀 제안(${offeredYears}년 · ${offeredSalary}M$)을 거절했습니다.\n"아직은 조건이 마음에 들지 않는다"는 입장입니다.`);
+          this.renderTransfer();
+          return;
+        }
+        team.budget -= offeredSalary;
+        d.contractYears = offeredYears; d.contractSalary = offeredSalary; d.morale = 70;
+        this.retiredPool.splice(i,1);
+        if(slotVal==='reserve'){
+          if(!team.reserves) team.reserves = [];
+          team.reserves.push(d);
+          this.addMail('이사회', '[복귀 성사]', `${d.name} 선수가 은퇴를 번복하고 ${team.name} 리저브 드라이버로 복귀합니다! (${offeredYears}년 · ${offeredSalary}M$)`);
+        } else {
+          const slot = parseInt(slotVal);
+          const replaced = team.drivers[slot];
+          team.drivers[slot] = d;
+          if(replaced){ if(!team.reserves) team.reserves = []; team.reserves.push(replaced); }
+          this.addMail('이사회', '[복귀 성사]', `${d.name} 선수가 은퇴를 번복하고 ${team.name}의 현역 드라이버로 복귀합니다! (${offeredYears}년 · ${offeredSalary}M$)${replaced?' '+replaced.name+' 선수는 리저브로 전환됩니다.':''}`);
+          this.newEngine();
+        }
+        this.renderTransfer();
         this.saveGame();
       });
     });
