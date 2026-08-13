@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UGP Manager Simulation</title>
+<title>F1 Manager Simulation</title>
 <style>
 /* =========================================================
-   UGP TV 방송 스타일의 다크 모드 테마
+   F1 TV 방송 스타일의 다크 모드 테마
 ========================================================= */
 :root{
   --bg-0:#0a0d12;
@@ -122,7 +122,7 @@ select, input[type=text]{
 .status-tag.out{background:#3a1414; color:#ff8080;}
 .status-tag.pit{background:#3a2f14; color:#ffd480;}
 
-/* --- IMSC 스튜어드 심의 마크(좌측 방송 패널) --- */
+/* --- FIA 스튜어드 심의 마크(좌측 방송 패널) --- */
 .steward-tag{ font-size:10px; margin-left:3px; }
 .steward-tag.penalty{ background:#3a1414; color:#ff8080; padding:1px 4px; border-radius:3px; font-weight:800; }
 
@@ -203,6 +203,22 @@ select, input[type=text]{
 /* --- 날씨 배지 --- */
 .weather-badge{ font-size:12px; padding:5px 10px; border-radius:4px; background:var(--bg-2); border:1px solid var(--line); }
 .weather-forecast{ font-size:11px; padding:5px 10px; border-radius:4px; background:var(--bg-2); border:1px dashed var(--blue); color:var(--blue); margin-left:6px; }
+
+/* --- 감독 프로필 설정(커리어 시작) 화면 --- */
+#managerSetupOverlay{
+  display:none; position:fixed; inset:0; background:rgba(5,7,10,.92); z-index:121;
+  align-items:center; justify-content:center;
+}
+#managerSetupOverlay.show{ display:flex; }
+#managerSetupModal{ width:min(420px,92vw); background:var(--bg-1); border:1px solid var(--line); border-radius:10px; padding:26px; text-align:center; }
+#managerSetupModal h2{ margin:0 0 6px 0; }
+.manager-setup-field{ text-align:left; margin-top:16px; }
+.manager-setup-field label{ display:block; font-size:11px; color:var(--text-2); margin-bottom:4px; }
+.manager-setup-field input, .manager-setup-field select{
+  width:100%; background:var(--bg-2); color:var(--text-0); border:1px solid var(--line); border-radius:6px;
+  padding:9px 10px; font-size:14px;
+}
+#managerSetupConfirmBtn{ width:100%; padding:12px; margin-top:20px; background:var(--red); border:none; color:#fff; font-weight:800; border-radius:6px; font-size:14px; }
 
 /* --- 팀 선택(커리어 시작) 화면 --- */
 #teamSelectOverlay{
@@ -417,6 +433,61 @@ select, input[type=text]{
 #driverModal .dm-morale .mtitle{font-size:11px; color:var(--text-2); text-transform:uppercase; margin-bottom:6px;}
 #driverModal .dm-sentiment{font-size:13px; font-weight:700; margin-top:6px;}
 
+/* ---------- 타 팀 드라이버 협상 팝업 ---------- */
+#rivalNegotiateOverlay{
+  display:none; position:fixed; inset:0; background:rgba(5,7,10,.72); z-index:140;
+  align-items:center; justify-content:center;
+}
+#rivalNegotiateOverlay.show{display:flex;}
+#rivalNegotiateModal{
+  width:min(460px,92vw); background:var(--bg-1); border:1px solid var(--line); border-radius:10px;
+  padding:20px; position:relative;
+}
+#rivalNegotiateModal .closeBtn{position:absolute; top:10px; right:12px; background:none; border:none; color:var(--text-2); font-size:18px;}
+#rivalNegotiateModal h2{margin:0 0 2px 0; font-size:18px;}
+#rivalNegotiateModal .rdr-ace{font-size:10px; color:var(--yellow); border:1px solid var(--yellow); border-radius:3px; padding:0 4px; margin-left:4px;}
+.rn-section{margin-top:16px; padding-top:12px; border-top:1px solid var(--line);}
+.rn-section h4{margin:0 0 4px; font-size:13px;}
+.rn-section .rn-hint{margin:0 0 8px; font-size:11px; color:var(--text-2); line-height:1.5;}
+.rn-row{display:flex; gap:6px; flex-wrap:wrap; align-items:center;}
+.rn-row select, .rn-row input{background:var(--bg-3); color:var(--text-0); border:1px solid var(--line); border-radius:4px; padding:5px 6px; font-size:12px;}
+.rn-row input{width:70px;}
+.rn-row button{margin-left:auto;}
+
+/* ---------- 시즌 중 타 팀 드라이버 오퍼 팝업 ---------- */
+#seasonOfferOverlay{
+  display:none; position:fixed; inset:0; background:rgba(5,7,10,.72); z-index:140;
+  align-items:center; justify-content:center;
+}
+#seasonOfferOverlay.show{display:flex;}
+#seasonOfferModal{
+  width:min(420px,92vw); background:var(--bg-1); border:1px solid var(--line); border-radius:10px;
+  padding:20px; position:relative;
+}
+#seasonOfferModal .closeBtn{position:absolute; top:10px; right:12px; background:none; border:none; color:var(--text-2); font-size:18px;}
+#seasonOfferModal h2{margin:0 0 2px 0; font-size:18px;}
+.season-offer-row{display:flex; justify-content:space-between; align-items:center; gap:8px; padding:8px 10px; background:var(--bg-2); border:1px solid var(--line); border-radius:6px; margin-bottom:6px; font-size:12px;}
+.season-offer-row .sof-status{font-size:10px; padding:2px 6px; border-radius:3px; font-weight:700; white-space:nowrap;}
+.season-offer-row .sof-status.pending{background:var(--yellow); color:#221a00;}
+.season-offer-row .sof-status.confirmed{background:var(--green); color:#04220c;}
+.season-offer-row .sof-withdraw{font-size:10px; padding:3px 8px; background:var(--bg-3); border:1px solid var(--line); border-radius:4px; color:var(--text-1); white-space:nowrap;}
+.season-offer-row .sof-withdraw:hover{border-color:var(--red); color:var(--red);}
+
+/* ---------- 오프시즌: 타 팀 드라이버 목록(팀별 접이식) ---------- */
+.rival-team-group{border:1px solid var(--line); border-radius:6px; margin-bottom:8px; background:var(--bg-2);}
+.rival-team-group summary{cursor:pointer; padding:9px 12px; font-size:13px; font-weight:600; list-style:none; display:flex; align-items:center; gap:8px;}
+.rival-team-group summary::-webkit-details-marker{display:none;}
+.rival-team-group summary::before{content:'▶'; font-size:9px; color:var(--text-2); transition:transform .15s;}
+.rival-team-group[open] summary::before{transform:rotate(90deg);}
+.rtg-dot{width:9px; height:9px; border-radius:50%; display:inline-block;}
+.rtg-tier{margin-left:auto; font-size:10px; color:var(--text-2); font-weight:400;}
+.rival-driver-row{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 12px; border-top:1px solid var(--line);}
+.rdr-info{display:flex; flex-direction:column; gap:2px;}
+.rdr-name{font-size:12.5px; font-weight:600;}
+.rdr-ace{font-size:9px; color:var(--yellow); border:1px solid var(--yellow); border-radius:3px; padding:0 4px; margin-left:4px; font-weight:400;}
+.rdr-sub{font-size:11px; color:var(--text-2);}
+.rival-driver-row button{white-space:nowrap;}
+
 ::-webkit-scrollbar{width:8px;}
 ::-webkit-scrollbar-thumb{background:var(--bg-3); border-radius:4px;}
 
@@ -475,6 +546,21 @@ select, input[type=text]{
 .starting-tyre-buttons button.selected{ border-color:var(--green); box-shadow:inset 0 0 0 1px var(--green); }
 .starting-tyre-buttons button:disabled{ opacity:.35; cursor:not-allowed; }
 #raceReadyBtn{ width:100%; padding:12px; margin-top:16px; background:var(--red); border:none; color:#fff; font-weight:800; border-radius:6px; font-size:14px; }
+#formationTrackInfo{ background:var(--bg-2); border:1px solid var(--line); border-radius:8px; padding:8px 12px; margin-bottom:4px; }
+#formationTrackInfo .fw-row{ display:flex; justify-content:space-between; align-items:center; padding:5px 0; font-size:12.5px; }
+#formationTrackInfo .fw-row:not(:first-child){ border-top:1px solid var(--line); }
+#formationTrackInfo .fw-row b{ color:var(--yellow); text-align:right; }
+#formationWeatherInfo{ background:var(--bg-2); border:1px solid var(--line); border-radius:8px; padding:8px 12px; margin-bottom:4px; }
+#formationWeatherInfo .fw-row{ display:flex; justify-content:space-between; align-items:center; padding:5px 0; font-size:12.5px; }
+#formationWeatherInfo .fw-row:not(:first-child){ border-top:1px solid var(--line); }
+#formationWeatherInfo .fw-row b{ color:var(--yellow); }
+#formationWeatherInfo .fw-row b.rain{ color:var(--blue); }
+#formationBroadcastInfo{ background:var(--bg-2); border:1px solid var(--line); border-radius:8px; padding:8px 12px; margin-bottom:4px; }
+#formationBroadcastInfo .fw-row{ display:flex; justify-content:space-between; align-items:center; padding:5px 0; font-size:12.5px; }
+#formationBroadcastInfo .fw-row b{ color:var(--yellow); }
+#formationBroadcastInfo .broadcast-commentary{ border-top:1px solid var(--line); margin-top:4px; padding-top:6px; }
+#formationBroadcastInfo .broadcast-commentary p{ margin:0 0 6px; font-size:11.5px; color:var(--text-1); font-style:italic; line-height:1.5; }
+#formationBroadcastInfo .broadcast-commentary p:last-child{ margin-bottom:0; }
 
 /* ---------- 결정적 순간 자동 일시정지(Decision Time) 모달 ---------- */
 #decisionPauseOverlay{
@@ -509,6 +595,25 @@ select, input[type=text]{
 #raceBanner.show{ display:block; }
 #raceBanner.sc{ background:var(--yellow); color:#221a00; }
 #raceBanner.rf{ background:var(--red); color:#fff; }
+#raceBanner.vsc{ background:var(--blue); color:#04121f; }
+
+/* ---------- 관중 반응 토스트 ---------- */
+/* 레이스 컨트롤 배너(#raceBanner, top:10px)와 겹치지 않도록 그 바로 아래, 트랙 상단의 눈에 잘 띄는
+   위치에 표시한다(기존에는 트랙 하단에 있어서 다른 UI에 묻혀 잘 안 보인다는 피드백을 반영). */
+#crowdReaction{
+  display:none; position:absolute; top:60px; left:50%; transform:translateX(-50%); z-index:56;
+  padding:7px 18px; border-radius:20px; font-weight:800; font-size:12.5px; white-space:nowrap;
+  background:var(--bg-2); border:1px solid var(--line); box-shadow:0 4px 16px rgba(0,0,0,.5);
+}
+#crowdReaction.show{ display:block; animation:crowd-pop 2.4s ease-out forwards; }
+#crowdReaction.cheer{ color:var(--green); border-color:var(--green); }
+#crowdReaction.groan{ color:var(--text-1); border-color:var(--red); }
+@keyframes crowd-pop{
+  0%{ opacity:0; transform:translateX(-50%) translateY(6px) scale(.9); }
+  12%{ opacity:1; transform:translateX(-50%) translateY(0) scale(1); }
+  80%{ opacity:1; }
+  100%{ opacity:0; transform:translateX(-50%) translateY(-4px) scale(.98); }
+}
 #raceBanner .sub{ display:block; font-size:10px; font-weight:600; letter-spacing:.5px; margin-top:2px; }
 #track-panel{ position:relative; }
 
@@ -531,6 +636,9 @@ select, input[type=text]{
 .contract-row .cname{ font-weight:700; font-size:13px; }
 .contract-row .csub{ font-size:10px; color:var(--text-2); }
 .contract-row .cactions{ display:flex; gap:6px; }
+.contract-row.threatened{ background:rgba(220,50,50,.12); border:1px solid var(--red); }
+.contract-row .threat-warn{ font-size:10.5px; color:var(--red); font-weight:700; margin-top:4px; max-width:340px; }
+.contract-row .retain-threat{ background:var(--red); border:none; color:#fff; font-weight:800; }
 .contract-row button{ padding:6px 10px; font-size:11px; font-weight:700; border-radius:4px; border:1px solid var(--line); background:var(--bg-3); color:var(--text-0); }
 .contract-row button.resign{ background:var(--green); color:#022; border-color:var(--green); }
 .contract-row .expiring{ color:var(--yellow); font-weight:800; }
@@ -588,12 +696,31 @@ select, input[type=text]{
 .roster-driver-pair input[data-driver-name]{ flex:1; min-width:0; }
 .roster-driver-pair input[data-driver-code]{ width:52px; flex:none; text-align:center; text-transform:uppercase; }
 #weeklyDashboardCloseBtn{ width:100%; padding:12px; margin-top:16px; background:var(--red); border:none; color:#fff; font-weight:800; border-radius:6px; font-size:14px; }
+
+/* ---------- 포디움 축하 이모티콘 빵빠레 ---------- */
+#confettiLayer{ position:fixed; inset:0; pointer-events:none; z-index:200; overflow:hidden; }
+.confetti-piece{
+  position:absolute; top:-40px; will-change:transform,opacity;
+  animation-name:confetti-fall; animation-timing-function:ease-in; animation-fill-mode:forwards;
+}
+@keyframes confetti-fall{
+  0%{ transform:translate(0,0) rotate(0deg); opacity:1; }
+  100%{ transform:translate(var(--drift), 105vh) rotate(var(--rot)); opacity:0; }
+}
+
+/* ---------- 팬 시스템 ---------- */
+.dm-fans{ font-size:12px; color:var(--yellow); font-weight:700; margin:2px 0 10px; }
+.fandom-card{ background:var(--bg-2); border:1px solid var(--line); border-radius:8px; padding:12px 14px; margin-bottom:16px; }
+.fandom-card h4{ margin:0 0 10px; font-size:13px; }
+.fandom-row{ display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-top:1px solid var(--line); font-size:12.5px; }
+.fandom-row:first-of-type{ border-top:none; }
+.fandom-row b{ color:var(--yellow); }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="logo">UGP<span>MANAGER</span> SIM</div>
+  <div class="logo">F1<span>MANAGER</span> SIM</div>
   <nav class="tabs">
     <button data-view="race" class="active">🏁 RACE</button>
     <button data-view="rd">🔧 R&amp;D</button>
@@ -604,11 +731,13 @@ select, input[type=text]{
     <button data-view="championship">🏆 챔피언십</button>
     <button data-view="trophy">🏆 트로피</button>
     <button data-view="hof">🎖️ 명예의 전당</button>
+    <button data-view="career">👤 감독 프로필</button>
     <button data-view="roster">✏️ 이름 편집</button>
   </nav>
   <div class="header-spacer"></div>
   <button id="muteBtn" title="효과음 켜기/끄기">🔊</button>
   <div class="team-select-box">
+    <span id="managerShow"></span>
     시즌 <b id="seasonShow" style="color:var(--yellow)">1</b> · 내 팀:
     <select id="teamSelect" disabled></select>
     <button id="newCareerBtn" title="현재 커리어를 지우고 팀을 새로 선택합니다">새 커리어</button>
@@ -628,7 +757,7 @@ select, input[type=text]{
     </div>
   </div>
 
-  <!-- 좌측: UGP TV 방송 스타일 순위 패널 -->
+  <!-- 좌측: F1 TV 방송 스타일 순위 패널 -->
   <div class="panel">
     <h3>Live Timing</h3>
     <div id="missionHud" class="mission-hud"></div>
@@ -639,6 +768,7 @@ select, input[type=text]{
   <!-- 중앙: 트랙 -->
   <div class="panel" id="track-panel">
     <div id="raceBanner"></div>
+    <div id="crowdReaction"></div>
     <div id="startLightsOverlay">
       <div class="start-lights-rig">
         <div class="start-light"></div><div class="start-light"></div><div class="start-light"></div>
@@ -808,6 +938,12 @@ select, input[type=text]{
       <h4>💰 시즌 스폰서 계약</h4>
       <div id="sponsorInfo"></div>
     </div>
+    <div class="card">
+      <h4>🤝 타 팀 드라이버에게 오퍼</h4>
+      <p style="color:var(--text-2); font-size:11px; margin:-4px 0 8px;">시즌 중에도 타 팀 드라이버에게 오퍼를 넣을 수 있습니다. 성사되면 다음 시즌 시작과 함께 자연스럽게 합류합니다.</p>
+      <div id="seasonOfferPending"></div>
+      <div id="seasonOfferList"></div>
+    </div>
   </div>
 </div>
 
@@ -857,15 +993,16 @@ select, input[type=text]{
   </div>
 </div>
 
-<!-- ========================= 챔피언십(GPDC/GPCC) VIEW ========================= -->
+<!-- ========================= 챔피언십(WDC/WCC) VIEW ========================= -->
 <div id="view-championship" class="view">
+  <div id="fandomCard"></div>
   <div class="mgmt-grid">
     <div class="card">
-      <h4>🏆 드라이버 챔피언십 (GPDC)</h4>
+      <h4>🏆 드라이버 챔피언십 (WDC)</h4>
       <div id="wdcTable"></div>
     </div>
     <div class="card">
-      <h4>🏆 컨스트럭터 챔피언십 (GPCC)</h4>
+      <h4>🏆 컨스트럭터 챔피언십 (WCC)</h4>
       <div id="wccTable"></div>
     </div>
   </div>
@@ -882,6 +1019,28 @@ select, input[type=text]{
     <h4>🎖️ 명예의 전당 — 시즌 최고의 순간</h4>
     <p style="color:var(--text-2); font-size:12px; margin-bottom:12px;">커리어 동안 만들어낸 기적적인 기록들이 자동으로 기록됩니다 — 역전 우승, 최단 피트스톱 신기록, 챔피언십 우승 등.</p>
     <div id="hofBody"></div>
+  </div>
+</div>
+
+<!-- ========================= 감독 커리어 프로필 VIEW ========================= -->
+<div id="view-career" class="view">
+  <div class="mgmt-grid">
+    <div class="card">
+      <h4>👤 감독 정보</h4>
+      <div id="careerManagerInfo"></div>
+    </div>
+    <div class="card">
+      <h4>📊 커리어 통산 기록</h4>
+      <div id="careerStatsBody"></div>
+    </div>
+    <div class="card">
+      <h4>🏳️ 소속 팀 이력</h4>
+      <div id="careerTeamHistoryBody"></div>
+    </div>
+    <div class="card">
+      <h4>🎉 팬덤 요약</h4>
+      <div id="careerFandomBody"></div>
+    </div>
   </div>
 </div>
 
@@ -903,10 +1062,43 @@ select, input[type=text]{
   </div>
 </div>
 
+<!-- ========================= 타 팀 드라이버 협상 팝업(트레이드/직접 영입 통합) ========================= -->
+<div id="rivalNegotiateOverlay">
+  <div id="rivalNegotiateModal">
+    <button class="closeBtn" id="rivalNegotiateClose">✕</button>
+    <div id="rivalNegotiateBody"></div>
+  </div>
+</div>
+
+<!-- ========================= 시즌 중 타 팀 드라이버 오퍼 팝업(합류는 다음 시즌 시작 시) ========================= -->
+<div id="seasonOfferOverlay">
+  <div id="seasonOfferModal">
+    <button class="closeBtn" id="seasonOfferClose">✕</button>
+    <div id="seasonOfferBody"></div>
+  </div>
+</div>
+
 <!-- ========================= 레이스 주말 이벤트 카드 모달 ========================= -->
 <div id="cardModalOverlay">
   <div id="cardModal">
     <div id="cardModalBody"></div>
+  </div>
+</div>
+
+<!-- ========================= 감독(플레이어) 프로필 설정(커리어 시작 시 1회) 화면 ========================= -->
+<div id="managerSetupOverlay">
+  <div id="managerSetupModal">
+    <h2>당신은 누구입니까?</h2>
+    <p style="color:var(--text-2); font-size:13px;">새로운 F1 팀 감독으로서의 커리어가 시작됩니다. 이름과 국적을 입력해주세요.</p>
+    <div class="manager-setup-field">
+      <label for="managerNameInput">감독 이름</label>
+      <input type="text" id="managerNameInput" maxlength="20" placeholder="예: 김지훈">
+    </div>
+    <div class="manager-setup-field">
+      <label for="managerNationalitySelect">국적</label>
+      <select id="managerNationalitySelect"></select>
+    </div>
+    <button id="managerSetupConfirmBtn">다음 — 팀 선택으로</button>
   </div>
 </div>
 
@@ -952,7 +1144,7 @@ select, input[type=text]{
 <div id="firedOverlay">
   <div id="firedModal">
     <h2>🚫 해임 통보</h2>
-    <p>이사회 신뢰도가 바닥나며, 당신은 팀 감독직에서 전격 해임되었습니다.</p>
+    <p id="firedMessage">이사회 신뢰도가 바닥나며, 당신은 팀 감독직에서 전격 해임되었습니다.</p>
     <p style="color:var(--text-2); font-size:12px;">시즌 목표 실패, 더블 DNF, 재정 위기가 누적된 결과입니다.</p>
     <button id="firedRestartBtn">새 커리어로 다시 시작</button>
   </div>
@@ -970,6 +1162,12 @@ select, input[type=text]{
   <div id="formationLapModal">
     <h2>🏁 레이스 시작 전 준비</h2>
     <p style="color:var(--text-2); font-size:13px; margin-bottom:10px;">그리드로 향하는 포메이션 랩입니다. 스타트 접근 방식과 두 드라이버의 스타팅 타이어를 정한 뒤 준비를 완료하세요.</p>
+    <h4 style="margin:14px 0 6px; font-size:13px; color:var(--text-1);">🏟️ 서킷 정보</h4>
+    <div id="formationTrackInfo"></div>
+    <h4 style="margin:14px 0 6px; font-size:13px; color:var(--text-1);">날씨</h4>
+    <div id="formationWeatherInfo"></div>
+    <h4 style="margin:14px 0 6px; font-size:13px; color:var(--text-1);">🎙️ 프리레이스 브리핑</h4>
+    <div id="formationBroadcastInfo"></div>
     <h4 style="margin:14px 0 6px; font-size:13px; color:var(--text-1);">포메이션 랩 세팅</h4>
     <button class="formation-choice" data-choice="warmup"><b>🔥 타이어 열 올리기</b><span>스타트 그립 극대화로 Turn 1 진입이 유리해지지만, 타이어 초기 마모가 약간 증가합니다.</span></button>
     <button class="formation-choice" data-choice="clutch"><b>⚙️ 클러치 / 연료 관리</b><span>스타트 반응이 안정되어 대형 실수 위험이 줄고, 연료를 약간 절약합니다.</span></button>
@@ -986,14 +1184,17 @@ select, input[type=text]{
   </div>
 </div>
 
+<!-- ========================= 포디움 축하 이모티콘 빵빠레 레이어 ========================= -->
+<div id="confettiLayer"></div>
+
 <script>
 /* =========================================================================================
-   UGP 매니저 시뮬레이션 — 프로토타입 v2
+   F1 매니저 시뮬레이션 — 프로토타입 v2
    구조: Track / Driver / Team / CarState / RaceEngine / Game(전역 상태·UI 바인딩)
 ========================================================================================= */
 
 /* ----------------------------------------------------------------
-   1. TRACK — 실제 UGP 서킷 데이터 (이름/길이/코너 수/특성) + 시각화용 폴리라인
+   1. TRACK — 실제 F1 서킷 데이터 (이름/길이/코너 수/특성) + 시각화용 폴리라인
 ---------------------------------------------------------------- */
 // [버그 수정] 트랙 코너가 각진 다각형(스파스 컨트롤 포인트 사이의 직선)으로 되어 있으면, 코너
 // 구간에서 곡률이 정점 하나에만 집중되어 "300km/h 주행 중 순간적으로 110km/h로 뚝 떨어지는" 부자연스러운
@@ -1040,7 +1241,7 @@ class Track{
     this.total = total; // 진행률 계산용 가상 트랙 길이(정규화 단위)
   }
   // 출발선(스타트/피니시 라인) 부근에서 갈라져 트랙 안쪽으로 들어가는 피트레인 경로를 자동 생성.
-  // 실제 UGP처럼 "피트레인 진입 → 피트박스 정차(타이어 교체) → 피트레인 출차 후 트랙 합류" 순서를 시각화하기 위함.
+  // 실제 F1처럼 "피트레인 진입 → 피트박스 정차(타이어 교체) → 피트레인 출차 후 트랙 합류" 순서를 시각화하기 위함.
   _buildPitLane(){
     // 진입/이탈 방향과 트랙 중심점은 원본(스파스) 컨트롤 포인트 기준으로 계산해야 한다 — 고밀도로
     // 보간된 this.points를 쓰면 시작/피니시 라인 바로 앞뒤 점들이 서로 너무 가까워져(원본 한 구간의
@@ -1203,7 +1404,7 @@ const NETHERLANDS_PTS = [
   P(0.62,0.74),P(0.48,0.72),P(0.36,0.76),P(0.28,0.70)
 ];
 
-// 시드 기반 의사난수로 단순한 폐곡선 트랙 실루엣을 절차적으로 생성 — 실제 UGP 캘린더를 20개 이상으로
+// 시드 기반 의사난수로 단순한 폐곡선 트랙 실루엣을 절차적으로 생성 — 실제 F1 캘린더를 20개 이상으로
 // 확장하면서 매 서킷을 일일이 손으로 그리는 대신, 서로 다른 모양의 그럴듯한 미니맵을 다수 만들기 위함.
 function proceduralTrackPoints(seed, n, irregularity){
   let s = seed;
@@ -1228,7 +1429,7 @@ const LASVEGAS_PTS = proceduralTrackPoints(909, 16, 0.12);
 const QATAR_PTS = proceduralTrackPoints(111, 15, 0.13);
 const ABUDHABI_PTS = proceduralTrackPoints(222, 15, 0.14);
 
-// 실제 UGP 시즌 캘린더의 주요 서킷들로 구성. 실제 레이스 랩 수 대신, 한 판이 너무 길어지지
+// 실제 F1 시즌 캘린더의 주요 서킷들로 구성. 실제 레이스 랩 수 대신, 한 판이 너무 길어지지
 // 않도록 서킷 간 상대적 길이감·성격은 유지하되 평균 15랩 안팎의 축약된 "숏 포맷" 거리로 조정.
 const TRACKS = {
   australia:   new Track({name:"Bayview Park Circuit", country:"Australia", points:AUSTRALIA_PTS,
@@ -1280,12 +1481,41 @@ const TRACKS = {
   abudhabi:    new Track({name:"Sunset Marina Circuit", country:"UAE", points:ABUDHABI_PTS,
     lengthKm:5.281, corners:16, character:'balanced', baseLapSeconds:85, laps:15}),
 };
-// 실제 UGP 캘린더 순서에 가깝게 배열한 24개 전체 서킷(2026 확장 캘린더 기준 근사치)
+// 실제 F1 캘린더 순서에 가깝게 배열한 24개 전체 서킷(2026 확장 캘린더 기준 근사치)
 const TRACK_ORDER = [
   'bahrain','saudi','australia','japan','china','miami','emiliaromagna','monaco','canada','spain',
   'austria','britain','belgium','hungary','netherlands','italy','azerbaijan','singapore','austin',
   'mexico','brazil','lasvegas','qatar','abudhabi',
 ];
+
+// 서킷별 위치·역사 정보 — 프리레이스 브리핑에서 "이번 주말은 어디서, 어떤 역사를 가진 곳에서
+// 열리는가"를 보여주는 데 쓰인다(TEAM_HISTORY와 동일한 패턴).
+const TRACK_HISTORY = {
+  bahrain: {city:'알 무하라크(Al Muharrak)', opened:2003, blurb:'중동 최초로 조성된 F1 서킷으로, 사막 한가운데 건설되어 개막전 야간 레이스로 시즌의 문을 여는 전통이 있다. 모래바람이 그립 변화를 일으키는 것으로 유명하다.'},
+  saudi: {city:'코르니시(Corniche)', opened:2021, blurb:'해안 도로를 따라 조성된 초고속 스트리트 서킷으로, F1 캘린더에서 가장 빠른 코너 구간을 자랑한다. 야간 조명 아래 펼쳐지는 아찔한 레이스로 유명하다.'},
+  australia: {city:'포트베이(Portbay)', opened:1952, blurb:'도심 호수를 둘러싼 공원형 서킷으로, 시즌 개막전이 자주 열리는 전통의 무대다. 여름 남반구의 화창한 날씨 속에 팬들이 호숫가에 모여 관전한다.'},
+  japan: {city:'아카츠키(Akatsuki)', opened:1961, blurb:'특유의 교차형 레이아웃과 고저차로 드라이버들 사이에서 가장 기술적인 서킷 중 하나로 꼽힌다. 열정적인 팬덤과 정교한 관전 문화로 유명하다.'},
+  china: {city:'진주만(Jinzhu Bay)', opened:2003, blurb:'현대적 인프라와 긴 백스트레이트를 갖춘 대형 서킷으로, 아시아 최대 규모의 관중석을 자랑한다. 달팽이 모양의 1섹터가 시그니처다.'},
+  miami: {city:'선포인트(Sun Point)', opened:2021, blurb:'대형 스타디움 단지를 둘러싼 신생 서킷으로, 화려한 엔터테인먼트와 결합된 이벤트성 레이스로 빠르게 인기를 얻었다. 인공 마리나가 트랙 옆에 조성되어 있다.'},
+  emiliaromagna: {city:'발디로사(Valdirosa)', opened:1952, blurb:'캘린더에서 가장 오랜 역사를 지닌 서킷 중 하나로, 기복이 심한 지형과 좁은 레이아웃이 원형 그대로 보존되어 왔다. 클래식 레이싱의 상징으로 여겨진다.'},
+  monaco: {city:'리버몬트(Rivermont)', opened:1928, blurb:'항구 도시의 좁은 거리를 그대로 활용한 스트리트 서킷으로, F1에서 가장 상징적인 무대로 꼽힌다. 요트와 고급 호텔이 늘어선 배경이 화려함을 더한다.'},
+  canada: {city:'레이크쇼어(Lakeshore)', opened:1977, blurb:'인공 섬 위에 조성된 독특한 서킷으로, 마지막 시케인 앞의 콘크리트 벽은 수많은 드라이버들의 레이스를 끝낸 곳으로 악명이 높다.'},
+  spain: {city:'코스타도라다(Costa Dorada)', opened:1990, blurb:'원래 팀들의 동계 테스트 장소로 쓰이던 상설 서킷이 그랑프리 개최지로 발전한 사례다. 다양한 코너 유형이 섞여 있어 종합적인 밸런스를 시험하는 곳으로 평가받는다.'},
+  austria: {city:'슈타이어링(Steyerling) 산악지대', opened:1969, blurb:'해발 고지에 자리한 짧고 굴곡진 서킷으로, 급격한 고저차와 짧은 랩타임이 특징이다. 알프스 산맥을 배경으로 한 절경으로도 유명하다.'},
+  britain: {city:'혼필드(Hornfield)', opened:1947, blurb:'옛 공군 비행장을 개조해 만든 서킷으로, 월드 챔피언십 역사상 최초의 그랑프리가 열린 유서 깊은 곳이다. 고속 코너의 연속으로 드라이버들의 실력을 가늠하는 무대로 꼽힌다.'},
+  belgium: {city:'아르덴(Ardennes) 숲', opened:1920, blurb:'울창한 숲을 가로지르는 캘린더 최장 길이의 서킷으로, 변덕스러운 날씨와 오르막 코너 구간이 결합되어 가장 까다로운 트랙으로 꼽힌다.'},
+  hungary: {city:'솔헤임(Solheim)', opened:1986, blurb:'좁고 구불구불한 레이아웃 때문에 추월이 어려워 "벽 없는 모나코"라는 별명으로 불린다. 여름 무더위 속에 예선전 위치 선점이 승부를 가른다.'},
+  netherlands: {city:'던코스트(Dunecoast)', opened:1947, blurb:'해안 모래언덕 사이로 조성된 서킷으로, 뱅크 처리된 코너가 특징이다. 오렌지 물결로 뒤덮인 홈 관중의 열기가 시즌 중 손꼽히는 장관을 이룬다.'},
+  italy: {city:'왕실공원(Royal Park)', opened:1921, blurb:'속도의 신전이라 불리는 유서 깊은 고속 서킷으로, 레이스가 끝나면 열혈 팬들이 트랙으로 뛰어들어 시상대를 둘러싸는 전통이 남아있다.'},
+  azerbaijan: {city:'카스피안베이(Caspian Bay)', opened:2016, blurb:'구시가지의 좁은 골목과 캘린더 최장 직선 구간이 공존하는 독특한 스트리트 서킷이다. 성벽 옆을 아슬아슬하게 스치는 구간이 명물로 꼽힌다.'},
+  singapore: {city:'하버라이츠(Harbor Lights)', opened:2008, blurb:'F1 최초의 야간 레이스가 열린 곳으로, 마리나를 둘러싼 조명 아래 습하고 긴 레이스 시간이 드라이버들의 체력을 극한까지 시험한다.'},
+  austin: {city:'힐컨트리(Hill Country)', opened:2012, blurb:'1코너의 급격한 오르막이 시그니처인 서킷으로, 세계 각지의 명 코너들을 참고해 설계되었다. 텍사스 특유의 축제 분위기 속에 레이스가 열린다.'},
+  mexico: {city:'알티플라노(Altiplano) 고원', opened:1959, blurb:'해발 2000미터가 넘는 고지대에 위치해 희박한 공기로 인해 다운포스와 엔진 출력이 크게 저하되는 독특한 서킷이다. 스타디움 섹션의 함성이 유명하다.'},
+  brazil: {city:'그린벨트(Greenbelt)', opened:1940, blurb:'반시계 방향으로 도는 기복이 심한 서킷으로, 변덕스러운 날씨 때문에 시즌 막판 순위 다툼의 무대가 되곤 한다. 짧은 랩 안에 오르막과 내리막이 반복된다.'},
+  lasvegas: {city:'네온대로(Neon Boulevard)', opened:2023, blurb:'도심 대로를 그대로 활용한 최신 스트리트 서킷으로, 화려한 네온사인 아래 심야에 펼쳐지는 초고속 레이스가 특징이다.'},
+  qatar: {city:'사하라(Sahara)', opened:2004, blurb:'원래 이륜차 경기장으로 지어졌던 시설을 F1용으로 개조한 사막 서킷이다. 촘촘하게 이어지는 고속 코너의 연속이 드라이버들의 목 근력을 시험한다.'},
+  abudhabi: {city:'선셋마리나(Sunset Marina)', opened:2009, blurb:'요트 마리나를 감싸며 조성된 서킷으로, 해질녘에 시작해 야간 조명 속에 레이스가 끝나는 연출로 유명하다. 시즌 최종전이 자주 열리는 무대다.'},
+};
 
 // 서킷 특성별 차량 성능 스탯 가중치 (레이스 연산에 반영)
 const TRACK_WEIGHTS = {
@@ -1298,7 +1528,7 @@ const TRACK_WEIGHTS = {
    2. TIRE COMPOUND / ERS 데이터
 ---------------------------------------------------------------- */
 // 마모율(wearRate)은 소프트가 미디엄/하드 대비 압도적으로 빨리 닳도록 재조정(랩당 체감 마모 강화).
-// 소프트=단거리 스퍼트용, 미디엄=핵심 1스톱 컴파운드, 하드=완주 지향이라는 실제 UGP 전략 구도를 재현.
+// 소프트=단거리 스퍼트용, 미디엄=핵심 1스톱 컴파운드, 하드=완주 지향이라는 실제 F1 전략 구도를 재현.
 const COMPOUNDS = {
   Soft:   {code:'S', speedMult:1.035, wearRate:0.22, baseTemp:98},
   Medium: {code:'M', speedMult:1.000, wearRate:0.11, baseTemp:88},
@@ -1452,7 +1682,7 @@ class Driver{
     // 차량 셋업(프론트 윙 각도 / 서스펜션, 0~10, 기본값 5) — 레이스 주말 내내(FP1~레이스) 유지되며
     // 프랙티스 세션 중 피트스톱 때마다 팀 라디오로 조정되거나, 텔레메트리 패널에서 수동 조정 가능.
     this.setup = { frontWing:5, suspension:5 };
-    this.champPoints = 0; // 드라이버 챔피언십(GPDC) 누적 포인트 — 시즌 종료 시 초기화
+    this.champPoints = 0; // 드라이버 챔피언십(WDC) 누적 포인트 — 시즌 종료 시 초기화
     // 파워유닛 내구도는 레이스 1회로 리셋되지 않고 시즌 내내(FP1~레이스, 서킷을 넘나들며) 누적된다.
     // 심각한 수준까지 떨어지면 강제 교체되며, 이때 다음 퀄리파잉 결과에 그리드 페널티가 예약된다.
     this.enginePUWear = 100;
@@ -1467,6 +1697,19 @@ class Driver{
     this.raceRustPenalty = 0; // "전면 휴식" 선택 시 다음 레이스 한정으로 붙는 소폭의 감각 저하 페널티
     this.powerUnitsUsedThisSeason = 0; // 시즌 허용 파워유닛 교체 수량 추적(초과 시 그리드 페널티)
     this.chassisDamage = 0; // 차량 손상도(0~100) — 레이스 중 충돌/사고로 누적되며, 주간 대시보드에서 수리 가능
+    // 오프시즌 중 타 팀의 역(逆)영입 시도 — { teamIdx } 형태. 방치하면 오프시즌 종료 시 이탈할 수 있다.
+    this.poachThreat = null;
+    // 레이스 중 타 팀 드라이버와의 휠투휠 배틀(추월 교환) 통산 횟수 — { 상대이름: 횟수 }. 시즌이
+    // 바뀌어도 초기화되지 않고 커리어 내내 누적되어, 특정 라이벌과의 "서사"가 쌓이도록 한다.
+    this.rivalryTotals = {};
+    // 팬 시스템: 나이가 어리고 경력(experience 스탯)이 짧은 신인일수록 초기 팬 수가 적고, 베테랑·
+    // 고실력 드라이버일수록 많다. 이후 포디움/레이스 결과에 따라 계속 늘거나 준다.
+    const exp = (this.stats && this.stats.experience!=null) ? this.stats.experience : 50;
+    this.fanCount = Math.max(300, Math.round(
+      800 + exp*110 + Math.max(0, this.age-20)*220 + (this.overall()-70)*70
+    ));
+    // 부상 시스템: 0이면 정상, N(>0)이면 사고로 다친 뒤 앞으로 N경기를 더 결장해야 함을 뜻한다.
+    this.injuredRaces = 0;
   }
   overall(){
     const s=this.stats;
@@ -1508,25 +1751,39 @@ function offerAcceptChance(team, driver, offeredSalary, offeredYears){
   chance += (offeredYears-2)*0.05; // 장기 계약 선호(1년 계약은 소폭 불리, 3년 계약은 소폭 유리)
   return Math.max(0.03, Math.min(0.97, chance));
 }
+// 타 팀 소속(계약이 남아있는) 드라이버에게 직접 연봉을 제시해 설득하는 "직접 영입 제안" 성사 확률.
+// 기본 협상 확률(offerAcceptChance)에 더해, 남은 계약 기간이 길수록·현재 팀의 에이스(1번 드라이버)일수록·
+// 지금 몸담은 팀이 제안하는 팀보다 격이 높을수록 거절 확률이 커진다. 반대로 팀 내 만족도가 낮으면
+// 이적 의사가 생겨 성사 확률이 소폭 오른다.
+function poachAcceptChance(myTeam, currentTeam, driver, offeredSalary, offeredYears){
+  let chance = offerAcceptChance(myTeam, driver, offeredSalary, offeredYears);
+  chance -= (driver.contractYears||0) * 0.08; // 남은 계약 기간이 길수록 이적 의사 감소
+  if(driver.role==='first') chance -= 0.12; // 현재 팀의 에이스는 쉽게 움직이지 않음
+  const tierRank = {S:3, A:2, B:1};
+  const tierDiff = tierRank[myTeam.tier] - tierRank[currentTeam.tier]; // 양수 = 더 좋은 팀으로의 이적 제안
+  chance += tierDiff * 0.12;
+  if(driver.morale < 50) chance += (50-driver.morale)*0.003; // 현재 팀에 대한 불만이 클수록 이적 의사 상승
+  return Math.max(0.02, Math.min(0.9, chance));
+}
 // 유스 아카데미 유망주를 이적시장에 매각할 때의 가치(M$): 현재 실력 + potential(성장 잠재력) 반영
 function youthSellValue(driver){
   const overall = driver.overall();
   const pot = driver.potential || overall;
   return Math.round((overall*0.03 + pot*0.05) * 10) / 10;
 }
-// PDS 시즌 참가 투자금: 성장 잠재력(potential)이 높은 유망주일수록 팀들의 관심이 높아 투자금도 커진다.
+// F2 시즌 참가 투자금: 성장 잠재력(potential)이 높은 유망주일수록 팀들의 관심이 높아 투자금도 커진다.
 function f2Cost(driver){
   return Math.round((8 + (driver.potential||70)*0.12) * 10) / 10;
 }
-const PDS_POINTS = [25,18,15,12,10,8,6,4,2,1];
-// 유스 육성을 단순 포인트 투자가 아닌 "PDS 리그 출전 시뮬레이션"으로 재현: 우리 팀의 매 레이스 주말마다
-// PDS에 등록된 유망주의 이번 라운드 성적을 확률적으로 시뮬레이션하고, 순위에 비례해 포인트와 스탯 성장을 부여한다.
-function simulatePDSRound(prospect){
+const F2_POINTS = [25,18,15,12,10,8,6,4,2,1];
+// 유스 육성을 단순 포인트 투자가 아닌 "F2 리그 출전 시뮬레이션"으로 재현: 우리 팀의 매 레이스 주말마다
+// F2에 등록된 유망주의 이번 라운드 성적을 확률적으로 시뮬레이션하고, 순위에 비례해 포인트와 스탯 성장을 부여한다.
+function simulateF2Round(prospect){
   const skillScore = (prospect.overall()*0.6 + (prospect.potential||70)*0.4) / 100; // 0~1
   const investBonus = Math.min(0.15, (prospect.f2Investment||0)/100);
   const perf = Math.min(0.98, Math.max(0.05, skillScore + investBonus + (Math.random()-0.5)*0.35));
   const pos = Math.max(1, Math.min(20, Math.round(21 - perf*20)));
-  const pts = pos<=10 ? PDS_POINTS[pos-1] : 0;
+  const pts = pos<=10 ? F2_POINTS[pos-1] : 0;
   prospect.f2Points = (prospect.f2Points||0) + pts;
   const growth = pos<=3 ? 3 : pos<=10 ? 2 : 1;
   const statKeys = ['speed','tireManagement','overtaking','consistency','defense','reaction'];
@@ -1605,6 +1862,15 @@ class Team{
     this.pitCrewFatigue = 20; // 피트 크루 피로도(0~100)
     this.tempPitBonus = 0;    // "피트스탑 집중 훈련" 선택 시 다음 레이스 한정 피트스톱 단축(초)
     this.rdProject = null;    // {category, daysLeft, trackBias} — 주간 대시보드의 R&D 진행 중인 파츠
+    // 팬 시스템: 팀 자체의 팬덤 규모. 역사가 길고 우승이 많은 명문팀일수록 초기 팬 수가 크다
+    // (TEAM_HISTORY의 창단연도/WDC·WCC 우승 횟수 기반). 경기 결과에 따라 시즌 진행 중 계속 변동한다.
+    const hist = TEAM_HISTORY[name];
+    this.fanCount = hist
+      ? Math.round(30000 + (hist.wdc+hist.wcc)*6000 + Math.max(0, 2026-hist.founded)*250)
+      : 30000;
+    // 부상 시스템: 본선 드라이버가 부상으로 결장 중일 때 { slot, injuredDriver } 형태로 대타 정보를 기록.
+    // null이면 아무도 부상 결장 중이 아님(정상 로스터).
+    this.injuredSwap = null;
   }
   weightedPerf(character){
     const w = TRACK_WEIGHTS[character];
@@ -1614,7 +1880,7 @@ class Team{
   }
 }
 
-// 팀별 역사 정보(창단 연도, 통산 GPDC/GPCC 우승 횟수, 한 줄 소개) — 팀 선택 화면 호버 카드에 사용(2025년 기준 근사치)
+// 팀별 역사 정보(창단 연도, 통산 WDC/WCC 우승 횟수, 한 줄 소개) — 팀 선택 화면 호버 카드에 사용(2025년 기준 근사치)
 const TEAM_HISTORY = {
   "Vantage Racing": {founded:2005, wdc:8, wcc:6, blurb:"2005년 창단. 알렉스 코르텐과 밀란 코박을 앞세워 2010년대와 2020년대를 지배한 강호."},
   "Scarlatti Racing": {founded:1950, wdc:15, wcc:16, blurb:"그리드 역사상 가장 오래된 팀. 이탈리아의 자존심이자 역대 최다 우승 기록을 보유한 전설적인 스쿠데리아."},
@@ -1744,7 +2010,7 @@ const SUB_SPONSORS = [
   {name:"Nordwear", safeReward:2, aggroReward:6},
 ];
 
-// 패독 루머·이적 속보에 인용되는 실제 UGP 저널리스트
+// 패독 루머·이적 속보에 인용되는 실제 F1 저널리스트
 const JOURNALISTS = ["Derek Holloway","Priya Nandan","Marco Ferretti","Sofia Lindqvist","Tobias Renner"];
 function randomJournalist(){ return JOURNALISTS[Math.floor(Math.random()*JOURNALISTS.length)]; }
 
@@ -1799,6 +2065,9 @@ const RADIO_LINES = {
   spin: [
     {tone:'angry', driver:"스핀했어! 겨우 트랙에 복귀했다.", eng:"괜찮아? 침착하게 페이스부터 다시 잡아봐."},
   ],
+  collisionDamage: [
+    {tone:'angry', driver:"방금 접촉이 있었어! 차가 이상해, 손상된 것 같아.", eng:"확인했다, 데이터 보니 파츠 손상이다. 상태 계속 지켜보자."},
+  ],
   goodStart: [
     {tone:'happy', driver:"완벽한 스타트야! 반응 최고였어!", eng:"좋은 출발이다, 그 기세로 밀어붙여!"},
   ],
@@ -1836,7 +2105,7 @@ const RADIO_LINES = {
   ],
 };
 
-// IMSC 스튜어드 심의 유형별 표시 라벨
+// FIA 스튜어드 심의 유형별 표시 라벨
 const STEWARD_TYPE_LABELS = {
   jump_start:'부정출발 의혹', yellow_overtake:'세이프티카 중 추월', collision:'트랙 위 경합/충돌', pit_speeding:'피트레인 속도위반 의혹',
 };
@@ -1910,6 +2179,22 @@ const RIVALRY_LINES = {
   ],
 };
 
+// 커리어 시작 시 감독(플레이어) 프로필 설정 화면에서 고를 수 있는 국적 목록(코드/국가명/국기 이모지).
+const MANAGER_NATIONALITIES = [
+  {code:'KR', name:'대한민국', flag:'🇰🇷'}, {code:'GB', name:'영국', flag:'🇬🇧'},
+  {code:'DE', name:'독일', flag:'🇩🇪'}, {code:'FR', name:'프랑스', flag:'🇫🇷'},
+  {code:'IT', name:'이탈리아', flag:'🇮🇹'}, {code:'ES', name:'스페인', flag:'🇪🇸'},
+  {code:'NL', name:'네덜란드', flag:'🇳🇱'}, {code:'BE', name:'벨기에', flag:'🇧🇪'},
+  {code:'AT', name:'오스트리아', flag:'🇦🇹'}, {code:'MC', name:'모나코', flag:'🇲🇨'},
+  {code:'CH', name:'스위스', flag:'🇨🇭'}, {code:'FI', name:'핀란드', flag:'🇫🇮'},
+  {code:'DK', name:'덴마크', flag:'🇩🇰'}, {code:'SE', name:'스웨덴', flag:'🇸🇪'},
+  {code:'JP', name:'일본', flag:'🇯🇵'}, {code:'CN', name:'중국', flag:'🇨🇳'},
+  {code:'AU', name:'호주', flag:'🇦🇺'}, {code:'NZ', name:'뉴질랜드', flag:'🇳🇿'},
+  {code:'US', name:'미국', flag:'🇺🇸'}, {code:'CA', name:'캐나다', flag:'🇨🇦'},
+  {code:'BR', name:'브라질', flag:'🇧🇷'}, {code:'MX', name:'멕시코', flag:'🇲🇽'},
+  {code:'AR', name:'아르헨티나', flag:'🇦🇷'}, {code:'TH', name:'태국', flag:'🇹🇭'},
+];
+
 /* ----------------------------------------------------------------
    5. CAR STATE — 레이스 중 각 드라이버의 실시간 차량 상태
 ---------------------------------------------------------------- */
@@ -1956,7 +2241,7 @@ class CarState{
     this.nextPracticePitLap = 0; // 프랙티스 세션 전용: 다음 강제 피트인 예정 랩
     this.fuel = 100;          // 연료 잔량(%) — 랩을 돌수록 소모되며, 가벼워질수록 페이스가 조금씩 빨라진다
     this.displaySpeedKmh = 0; // 텔레메트리에 표시되는 실시간 속도(km/h) — 코너/직선 곡률에 따라 변동
-    this.stewardStatus = null; // IMSC 심의 상태: {stage:'noted'|'investigating'|'nfa'|'penalty', caseType, penalty}
+    this.stewardStatus = null; // FIA 심의 상태: {stage:'noted'|'investigating'|'nfa'|'penalty', caseType, penalty}
     this.dsqReason = null;      // 경기 후 실격(DSQ) 사유
     this.gearboxIssue = false;  // 기어박스/디퍼런셜 트러블 — 플레이어 선택(A/B) 대기 중 여부
     this.dilemmaPenalty = 0;    // 돌발 이슈 대응 결과로 지속되는 페이스 손실 배율
@@ -2029,6 +2314,9 @@ class RaceEngine{
 
     this.elapsed = 0; this.running = false; this.finished = false; this.weather = 'Dry';
     this.overtakeEvents = [];         // 추월 로그
+    // 이번 레이스에서 서로 다른 팀 소속 두 드라이버가 몇 번이나 순위를 주고받았는지(휠투휠 배틀 강도)
+    // 기록한다. 키는 "이름A|이름B"(사전순 정렬). 레이스 후 인터뷰에서 실제로 격돌한 라이벌을 짚어주는 데 쓰인다.
+    this.raceHeadToHead = {};
     this._prevOrder = null;           // 이전 체크포인트의 순위(추월 감지용)
     this._overtakeAcc = 0;
     this.setupRadioEvents = [];       // 프랙티스 셋업 조정 팀 라디오 이벤트 큐
@@ -2037,9 +2325,15 @@ class RaceEngine{
     this._raceStarted = false;        // 메인 레이스의 스탠딩 스타트(스타팅 라이트)가 이미 실행되었는지 여부
     // 세이프티카: 사고 발생 시 확률적으로 발동. 활성화 중에는 전 차량 페이스가 제한되고 추월이 전면 금지된다.
     this.safetyCar = { active:false, endLap:0 };
+    // 가상 세이프티카(VSC): 실제 세이프티카 차량 출동 없이 델타 페이스만 강제하는 더 가벼운 버전.
+    // 경미한 사고(충돌 손상/스핀)에서 확률적으로 발동하며, 세이프티카보다 페이스 제한이 약하고
+    // 지속 시간도 짧다. 세이프티카와 동시에는 발동하지 않는다.
+    this.vsc = { active:false, endLap:0 };
     // 레드플래그: 심각한 사고 시 드물게 발동. 활성화 중에는 전 차량이 그 자리에서 완전히 정지(피트에서 대기)한다.
     this.redFlag = { active:false, timer:0, justEnded:false };
-    // IMSC 스튜어드 심의: 부정출발/SC 중 추월/충돌/피트레인 속도위반 등에 대해 NOTED → UNDER INVESTIGATION →
+    // 트랙 진화(러버링인, 0~1): 세션이 진행될수록 노면에 그립이 쌓여 전 차량이 다같이 조금씩 빨라진다.
+    this.trackEvolution = 0;
+    // FIA 스튜어드 심의: 부정출발/SC 중 추월/충돌/피트레인 속도위반 등에 대해 NOTED → UNDER INVESTIGATION →
     // NFA/PENALTY 단계로 진행되는 심의 케이스 목록. car.stewardStatus에 현재 단계가 실시간 반영된다.
     this.stewardCases = [];
     this.stewardEvents = []; // 심의 개시/단계 전환 이벤트 큐(Game 레이어에서 메일/로그로 드레인)
@@ -2093,7 +2387,7 @@ class RaceEngine{
     return car.team===this.teams[this.playerTeamIdx];
   }
   requestPit(car, compound){
-    // 버튼을 누른다고 즉시 피트박스로 이동하지 않는다. 실제 UGP처럼 드라이버는 현재 주행을
+    // 버튼을 누른다고 즉시 피트박스로 이동하지 않는다. 실제 F1처럼 드라이버는 현재 주행을
     // 계속하다가 트랙 위의 피트레인 진입 지점에 도달했을 때 비로소 피트로 들어간다.
     if(car.inPit || car.pitRequested || car.status!=='running') return;
     car.pitRequested = true;
@@ -2101,7 +2395,7 @@ class RaceEngine{
   }
   tick(dt){
     if(!this.running || this.finished) return;
-    // 레드플래그 발동 중에는 시계와 모든 차량 진행이 완전히 정지한다(실제 UGP 레드플래그처럼).
+    // 레드플래그 발동 중에는 시계와 모든 차량 진행이 완전히 정지한다(실제 F1 레드플래그처럼).
     if(this.redFlag.active){
       this.redFlag.timer -= dt;
       if(this.redFlag.timer<=0){
@@ -2120,6 +2414,10 @@ class RaceEngine{
     const leaderLapNow = this.getLeader() ? this.getLeader().lap : 0;
     // 더티 에어 판정용: 이번 틱의 앞차와의 인터벌(초)을 미리 한 번만 계산해둔다(레이스 세션 한정 개념).
     const dirtyAirIntervals = this.sessionKind==='race' ? new Map(this.standings().map(s=>[s.car, s.interval])) : null;
+    // 트랙 진화: 시간제한 세션(Q1~Q3)은 경과시간 비율로, 랩 기반 세션(FP/레이스)은 선두의 진행률로 갱신한다.
+    this.trackEvolution = this.timeLimit
+      ? Math.min(1, this.elapsed/this.timeLimit)
+      : Math.min(1, leaderLapNow/Math.max(1,this.effLaps));
 
     // 세션 종류와 무관하게(FP/퀄리/레이스 모두) 한 번 'retired'가 된 차량은 그 세션 안에서
     // 두 번 다시 움직이지 않는다 — 피트에서 즉석 수리 후 재출전하는 경로는 존재하지 않으며,
@@ -2208,6 +2506,25 @@ class RaceEngine{
       car.blistering = car.dirtyAirTime > 8;
       const dirtyAirPenalty = inDirtyAir ? 0.012 : 0;
 
+      // DRS 존 / 슬립스트림: 트랙 곡률이 낮은(직선에 가까운) 구간에서만 유효하다. curvatureAt()은
+      // 이미 실시간 속도 표시에 쓰이던 함수를 그대로 재사용한다(별도의 트랙별 DRS존 데이터 불필요).
+      const curvatureNow = this.track.curvatureAt((Math.max(0,car.totalDistance)%this.track.total)/this.track.total);
+      const noHazard = !this.safetyCar.active && !this.vsc.active && !this.redFlag.active;
+      // DRS: 레이스에서는 실제 F1처럼 2랩 이후·1초 이내 근접 시에만 열리고, FP/퀄리에서는 근접 조건 없이
+      // 구간 안에서 자유롭게 사용 가능하다(실제 규정과 동일하게 단순화).
+      const drsZone = curvatureNow < 0.15;
+      const drsAvailable = drsZone && (this.sessionKind!=='race'
+        ? true
+        : (noHazard && leaderLapNow>=2 && gapAhead!=null && gapAhead>0 && gapAhead<1.0));
+      const drsBonus = drsAvailable ? 0.035 : 0;
+      // 슬립스트림(드래프팅): DRS와 무관하게, 직선 구간에서 앞차와 가까이 붙어 있으면 공기저항이
+      // 줄어 자연스럽게 속도가 붙는다. 가까울수록(1.2초 이내) 보너스가 커진다.
+      const draftZone = curvatureNow < 0.25;
+      const slipstreamBonus = (draftZone && noHazard && gapAhead!=null && gapAhead>0 && gapAhead<1.2)
+        ? 0.02*(1 - gapAhead/1.2) : 0;
+      // 트랙 진화: 세션이 진행될수록 노면 그립이 쌓여 전 차량이 다같이 조금씩(최대 +1.2%) 빨라진다.
+      const trackEvolutionBonus = this.trackEvolution * 0.012;
+
       // 차량 셋업(프론트 윙/서스펜션)이 실제 물리치에 직접 반영되도록 계산:
       // - 프론트 윙 각도↑ = 다운포스↑ → 코너링 속도는 좋아지지만 직선 최고속도는 손해(트레이드오프)
       // - 서스펜션↑(스티프) = 코너링 안정성↑ · 타이어 마모 감소, 대신 최고속도에는 영향 없음
@@ -2264,7 +2581,7 @@ class RaceEngine{
       const enragedFailMult = car.enraged ? 3 : 1;
       // 손상된 부품(프론트 윙/사이드팟)을 수리하지 않고 강행 운행하면 구조적으로 추가 사고 위험이 붙는다.
       const damageFailMult = 1 + (car.frontWingDamage+car.sidepodDamage)/250;
-      // [버그 수정] 기본 확률이 너무 높아 한 레이스에 DNF가 과도하게 쏟아지는 문제 — 실제 UGP처럼
+      // [버그 수정] 기본 확률이 너무 높아 한 레이스에 DNF가 과도하게 쏟아지는 문제 — 실제 F1처럼
       // 레이스당 평균 1~2건 수준이 되도록 기준 확률을 대폭 낮췄다(약 1/3 수준으로 하향).
       if(Math.random() < 0.00008*dt*tierFailMult*wearFailMult*enragedFailMult*damageFailMult){
         const roll = Math.random();
@@ -2272,8 +2589,8 @@ class RaceEngine{
           // 엔진 트러블 → 리타이어(DNF)
           car.status='retired'; car.durability=0; car.retireReason='engine';
           this.incidentEvents.push({car, type:'engineFailure'});
-          // 트랙 위에 차가 멈추는 상황 → 실제 UGP처럼 확률적으로 세이프티카 혹은(드물게) 레드플래그가 발동된다.
-          if(this.sessionKind==='race' && !this.safetyCar.active && !this.redFlag.active){
+          // 트랙 위에 차가 멈추는 상황 → 실제 F1처럼 확률적으로 세이프티카 혹은(드물게) 레드플래그가 발동된다.
+          if(this.sessionKind==='race' && !this.safetyCar.active && !this.vsc.active && !this.redFlag.active){
             const caution = Math.random();
             if(caution < 0.08){
               this.redFlag.active = true; this.redFlag.timer = 15;
@@ -2302,6 +2619,12 @@ class RaceEngine{
           car.totalDistance = Math.max(0, car.totalDistance - baseSpeed*2);
           this.incidentEvents.push({car, type:'collisionDamage'});
           if(this.sessionKind==='race' && Math.random()<0.4) this.raiseStewardCase(car, 'collision');
+          // 충돌 잔해/경합 상황 정리를 위해 낮은 확률로 가상 세이프티카(VSC)가 발동된다(풀 세이프티카보다 가벼운 대응).
+          if(this.sessionKind==='race' && !this.safetyCar.active && !this.vsc.active && !this.redFlag.active && Math.random()<0.15){
+            const leaderLap = this.getLeader() ? this.getLeader().lap : 0;
+            this.vsc.active = true; this.vsc.endLap = leaderLap + 1.5;
+            this.raceControlEvents.push({type:'vscStart', reason:car.driver});
+          }
           if(this.sessionKind==='race' && this.isMyTeamCar(car)){
             this.dilemmaEvents.push({car, type:'damage'});
           } else {
@@ -2322,6 +2645,12 @@ class RaceEngine{
           this.incidentEvents.push({car, type:'spin'});
           // 스핀 중 다른 차량과 경합(접촉) 상황이 발생했을 가능성 — 확률적으로 스튜어드 심의에 회부된다.
           if(this.sessionKind==='race' && Math.random()<0.25) this.raiseStewardCase(car, 'collision');
+          // 스핀한 차량이 트랙 위(그래블/런오프)에 걸쳐 있을 가능성 — 낮은 확률로 VSC가 발동된다.
+          if(this.sessionKind==='race' && !this.safetyCar.active && !this.vsc.active && !this.redFlag.active && Math.random()<0.08){
+            const leaderLap = this.getLeader() ? this.getLeader().lap : 0;
+            this.vsc.active = true; this.vsc.endLap = leaderLap + 1.5;
+            this.raceControlEvents.push({type:'vscStart', reason:car.driver});
+          }
         } else {
           // 기어박스/디퍼런셜 트러블 → 즉시 리타이어는 아니지만, 대응 방식(A/B)에 따라 결과가 크게 갈린다.
           car.gearboxIssue = true;
@@ -2375,11 +2704,14 @@ class RaceEngine{
       const enragedBonus = car.enraged ? 0.015 : 0;
       const factor = comp.speedMult * wearCliff * driverFactor * ersBoost * teamFactor * rainPenalty * setupFactor
         + fuelFactorBonus - (car.dilemmaPenalty||0) + (car.dilemmaBonus||0) - fatiguePenalty - damagePenalty
-        - raceDamagePenalty - liftAndCoastPenalty - dirtyAirPenalty + enragedBonus - (car.driver.raceRustPenalty||0) + consistencyNoise;
+        - raceDamagePenalty - liftAndCoastPenalty - dirtyAirPenalty + enragedBonus - (car.driver.raceRustPenalty||0) + consistencyNoise
+        + drsBonus + slipstreamBonus + trackEvolutionBonus;
 
       let speed = baseSpeed*Math.max(0.4,factor);
       // 세이프티카 발동 중: 전 차량(피트 진입/출차 중인 차량 제외)이 세이프티카 페이스로 강제 제한된다.
       if(this.safetyCar.active) speed = Math.min(speed, baseSpeed*0.55);
+      // 가상 세이프티카(VSC) 발동 중: 세이프티카보다는 약한 델타 페이스로 제한된다.
+      if(this.vsc.active) speed = Math.min(speed, baseSpeed*0.75);
       const prevDist = car.totalDistance;
       car.totalDistance += speed*dt;
       car.lap = Math.floor(Math.max(0,car.totalDistance)/this.track.total);
@@ -2401,7 +2733,7 @@ class RaceEngine{
           // [버그 수정] 진입/출차 구간이 너무 짧아(각 4초, 피트레인 속도로 실제 거리손실이 약 3.4초
           // 상당에 불과) 전체 피트스톱의 거리 손실이 10초 안팎밖에 되지 않았다. 그 결과 피트아웃한
           // 차량이 실제 순위/인터벌보다 훨씬 유리하게(원래 순위에 가깝게) 트랙에 복귀해버리는 것처럼
-          // 보이는 문제가 있었다. 실제 UGP 피트스톱의 체감 손실(약 20~25초)에 맞춰 진입/출차 구간을
+          // 보이는 문제가 있었다. 실제 F1 피트스톱의 체감 손실(약 20~25초)에 맞춰 진입/출차 구간을
           // 각각 12초로 늘려, 타이어 교체 시간까지 합쳐 총 손실이 그 구간에 들어오도록 조정했다.
           car.inPit = true; car.pitPhase = 'entering'; car.pitPhaseTimer = 12;
           // 피트 크루의 세부 훈련 스탯이 실전에 직접 반영된다: 타이어 교체 속도 스탯이 높을수록
@@ -2520,9 +2852,9 @@ class RaceEngine{
           const curA = order[i], curB = order[i+1];
           const prevA = prevIdx.get(curA), prevB = prevIdx.get(curB);
           if(prevA===i+1 && prevB===i){
-            // 세이프티카 발동 중에는 실제 UGP 규정처럼 추월이 전면 금지된다 — 정상 추월로 기록하는 대신
+            // 세이프티카/VSC 발동 중에는 실제 F1 규정처럼 추월이 전면 금지된다 — 정상 추월로 기록하는 대신
             // 확률적으로 "세이프티카 중 추월" 스튜어드 심의에 회부한다.
-            if(this.safetyCar.active){
+            if(this.safetyCar.active || this.vsc.active){
               if(this.sessionKind==='race' && Math.random()<0.4) this.raiseStewardCase(curA, 'yellow_overtake');
             } else {
               this.overtakeEvents.unshift({
@@ -2533,6 +2865,16 @@ class RaceEngine{
               });
               curA.overtakeFlash = 1.0;
               if(this.overtakeEvents.length>30) this.overtakeEvents.pop();
+              // 라이벌리 누적: 서로 다른 팀 소속 드라이버끼리, 그중 최소 한쪽이 내 팀일 때만 추적한다.
+              // 커리어 내내 유지되는 Driver.rivalryTotals(시즌 넘어서도 이어지는 통산 기록)와, 이번
+              // 레이스 한정 raceHeadToHead(레이스 후 인터뷰에서 "오늘 몇 번 붙었는지" 짚어주는 용도)를 동시에 갱신한다.
+              if(this.sessionKind==='race' && curA.team!==curB.team && (this.isMyTeamCar(curA)||this.isMyTeamCar(curB))){
+                const dA = curA.driver, dB = curB.driver;
+                dA.rivalryTotals[dB.name] = (dA.rivalryTotals[dB.name]||0)+1;
+                dB.rivalryTotals[dA.name] = (dB.rivalryTotals[dA.name]||0)+1;
+                const pairKey = [dA.name, dB.name].sort().join('|');
+                this.raceHeadToHead[pairKey] = (this.raceHeadToHead[pairKey]||0)+1;
+              }
               // 드라이버 심리(과열/분노): 억울하게 추월당한 내 팀 드라이버는 확률적으로 '과열' 상태에
               // 빠진다 — 추월 성공률은 소폭 오르지만 과도한 제동으로 인한 스핀/충돌 위험이 3배 폭증한다.
               // [버그 수정] 레이스 시작 직후(라이트 아웃/Turn 1 그리드 경합) 발생하는 순위 변동까지
@@ -2549,8 +2891,8 @@ class RaceEngine{
       this._prevOrder = order;
     }
 
-    // IMSC 스튜어드 심의 진행: NOTED(접수) → UNDER INVESTIGATION(조사) → NO FURTHER ACTION 또는
-    // PENALTY(5초/10초 타임 페널티, 드라이브 스루) 순으로 실제 UGP 방송처럼 단계적으로 확정된다.
+    // FIA 스튜어드 심의 진행: NOTED(접수) → UNDER INVESTIGATION(조사) → NO FURTHER ACTION 또는
+    // PENALTY(5초/10초 타임 페널티, 드라이브 스루) 순으로 실제 F1 방송처럼 단계적으로 확정된다.
     this.stewardCases.forEach(sc=>{
       if(sc.done) return;
       sc.timer -= dt;
@@ -2591,8 +2933,16 @@ class RaceEngine{
         this.raceControlEvents.push({type:'safetyCarEnd'});
       }
     }
+    // 가상 세이프티카(VSC) 종료 판정: 세이프티카보다 짧게(약 1.5랩) 유지된다.
+    if(this.vsc.active){
+      const leaderNow = this.getLeader();
+      if(leaderNow && leaderNow.lap>=this.vsc.endLap){
+        this.vsc.active = false;
+        this.raceControlEvents.push({type:'vscEnd'});
+      }
+    }
 
-    // 동적 날씨 변화: 예보된 랩에 도달하면 맑음→비로 1회 전환된다(실제 UGP처럼 레이스 중 날씨가 급변).
+    // 동적 날씨 변화: 예보된 랩에 도달하면 맑음→비로 1회 전환된다(실제 F1처럼 레이스 중 날씨가 급변).
     if(this.weatherWillChange){
       const leaderNow2 = this.getLeader();
       if(leaderNow2 && leaderNow2.lap>=this.weatherChangeLap){
@@ -2635,13 +2985,13 @@ class RaceEngine{
    7. GAME — 전역 상태 관리 및 UI 바인딩
 ---------------------------------------------------------------- */
 const RACES_PER_SEASON = TRACK_ORDER.length;
-// 실제 UGP 포인트 시스템: 1~10위 순위별 포인트 + 완주 톱10 안에서 패스티스트 랩 기록 시 +1점
-const UGP_POINTS = [25,18,15,12,10,8,6,4,2,1];
-function pointsForPosition(pos){ return pos>=1 && pos<=UGP_POINTS.length ? UGP_POINTS[pos-1] : 0; }
-const SAVE_KEY = 'ugpManagerSim_save_v1';
+// 실제 F1 포인트 시스템: 1~10위 순위별 포인트 + 완주 톱10 안에서 패스티스트 랩 기록 시 +1점
+const F1_POINTS = [25,18,15,12,10,8,6,4,2,1];
+function pointsForPosition(pos){ return pos>=1 && pos<=F1_POINTS.length ? F1_POINTS[pos-1] : 0; }
+const SAVE_KEY = 'f1managerSim_save_v1';
 
 // 레이스 주말 흐름: FP1 → FP2 → FP3 → (카드 이벤트) → Q1 → Q2 → Q3(녹아웃 퀄리파잉) → 메인 레이스
-// Q1/Q2/Q3는 실제 UGP처럼 시간 제한(초) 세션이며, 매 세션 종료 시 하위 5명이 탈락하고
+// Q1/Q2/Q3는 실제 F1처럼 시간 제한(초) 세션이며, 매 세션 종료 시 하위 5명이 탈락하고
 // 남은 인원만 다음 세션에 참가한다(참가자 수는 RaceEngine 생성 시 opts.participants로 필터링).
 const SESSION_CONFIG = {
   FP1: {label:'FP1 · 프리 프랙티스 1', laps:10, kind:'practice'},
@@ -2655,24 +3005,20 @@ const SESSION_CONFIG = {
 const STAGE_ORDER = ['FP1','FP2','FP3','CARD','Q1','Q2','Q3','RACE'];
 const STAGE_LABELS = {FP1:'FP1', FP2:'FP2', FP3:'FP3', CARD:'🎴 카드', Q1:'Q1', Q2:'Q2', Q3:'Q3', RACE:'🏁 레이스'};
 
-// 배경음악(BGM) 코드 진행 — Am - F - C - G. 단조 기반의 긴장감 있는 드라이빙 진행으로,
-// root는 베이스용, notes는 아르페지오용 코드톤(저→고음 순).
-// [버그 수정] 이전 버전은 베이스(43~65Hz)가 엔진 사운드(70Hz 대역)와 거의 같은 저음역에 겹쳐서
-// 서로 뭉개져 "우우웅" 하는 하나의 뭉뚱그려진 저음 잡음처럼 들리는 문제가 있었다. 베이스와
-// 아르페지오를 통째로 한 옥타브씩 끌어올려 엔진 사운드의 저음역(약 40~100Hz)과 명확히 분리되는
-// 중고음역에 배치해, 엔진 사운드와 뒤섞이지 않고 별개의 음악으로 또렷하게 들리도록 했다.
-const BGM_TEMPO = 126; // BPM
-const BGM_CHORDS = [
-  { root:110.00, notes:[220.00,261.63,329.63,440.00] }, // Am (베이스 A2, 아르페지오 A3-C4-E4-A4)
-  { root:87.31,  notes:[174.61,220.00,261.63,349.23] }, // F  (베이스 PDS, 아르페지오 F3-A3-C4-F4)
-  { root:130.81, notes:[261.63,329.63,392.00,523.25] }, // C  (베이스 C3, 아르페지오 C4-E4-G4-C5)
-  { root:98.00,  notes:[196.00,246.94,293.66,392.00] }, // G  (베이스 G2, 아르페지오 G3-B3-D4-G4)
-];
-
 const Game = {
   teams: buildTeams(),
   playerTeamIdx: 0,
   trackKey: 'australia',
+  managerName: '',          // 플레이어(감독) 프로필 — 커리어 시작 시 1회 설정 화면에서 입력
+  managerNationality: null, // MANAGER_NATIONALITIES의 code (예: 'KR')
+  cheatMode: false,         // 감독 이름을 "초보자"로 지으면 활성화되는 치트 모드(무제한 자금/RP + 트레이드 100% 성사)
+  managerReputation: 50,    // 감독 평판(0~100) — 시즌 최종 순위에 따라 갱신, 타 팀 스카우트 제의 확률에 반영
+  pendingSeasonOffers: [],   // 시즌 중 타 팀 드라이버에게 넣은 오퍼 — 다음 레이스 종료 시 성사 여부가 갈린다
+  confirmedTransfers: [],    // 시즌 중 성사된 오퍼 — 다음 시즌 시작 시 실제로 로스터에 합류한다
+  peakReputation: 50,        // 감독 커리어 통산 최고 평판 기록
+  careerStats: { racesCompleted: 0, podiums: 0 }, // 감독 커리어 통산 기록(우승은 trophies.raceWins.length로 이미 집계됨)
+  careerTeamHistory: [],     // 감독이 거쳐온 팀 이력 — [{season, teamName}]
+  trackRecords: {},          // 서킷별 우리 팀 통산 전적 — { trackKey: {visits, wins, podiums, bestPos, bestSeason} }
   engine: null,
   simSpeed: 5,
   lastTs: null,
@@ -2696,9 +3042,8 @@ const Game = {
   radioLog: [],            // 팀 라디오(드라이버 ↔ 레이스 엔지니어) 대화 로그
   _radioCooldown: {},       // 드라이버별 라디오 발화 쿨다운(연속 스팸 방지)
 
-  // ---- 오디오(배경음악 + 엔진음 + 성공 차임) 상태 ----
-  audio: { ctx:null, muted:false, engineOsc:null, engineFilter:null, engineGain:null, bgmGain:null, bgmFilter:null, lastChimeAt:0,
-    bgmSchedulerTimer:null, bgmNextNoteTime:0, bgmStep:0, bgmBarIdx:0 },
+  // ---- 오디오(피트인 확인음 전용) 상태 ----
+  audio: { ctx:null, muted:false },
 
   // ---- 레이스 주말 흐름 상태 (FP1→FP2→FP3→카드→퀄리→레이스) ----
   weekendStage: 'FP1',
@@ -2731,10 +3076,11 @@ const Game = {
     const loaded = this.loadGame();
     this.populateTeamSelect();
     if(loaded){
+      this.updateManagerDisplay();
       this.finishInit();
     } else {
       this.seedMails();
-      this.showTeamSelectScreen();
+      this.showManagerSetupScreen();
     }
   },
 
@@ -2751,6 +3097,35 @@ const Game = {
     requestAnimationFrame(this.loop);
   },
 
+  // 커리어 시작 시 팀 선택보다 먼저 1회만 등장하는 감독(플레이어) 프로필 설정 화면.
+  // 이름/국적을 정하면 헤더에 표시되고, 일부 메일/게임오버 문구에도 반영된다.
+  showManagerSetupScreen(){
+    const sel = document.getElementById('managerNationalitySelect');
+    sel.innerHTML = MANAGER_NATIONALITIES.map(n=>`<option value="${n.code}">${n.flag} ${n.name}</option>`).join('');
+    document.getElementById('managerNameInput').value = '';
+    document.getElementById('managerSetupOverlay').classList.add('show');
+  },
+  updateManagerDisplay(){
+    const box = document.getElementById('managerShow');
+    if(!box) return;
+    if(!this.managerName){ box.textContent = ''; return; }
+    const nat = MANAGER_NATIONALITIES.find(n=>n.code===this.managerNationality);
+    box.textContent = `${nat?nat.flag:''} ${this.managerName} 감독${this.cheatMode?' 🎮CHEAT':''} · `;
+  },
+  // 숨겨진 치트 모드: 자금/R&D 포인트는 매 프레임 loop()에서 상한선까지 자동으로 채워지고(무제한처럼
+  // 동작), 트레이드/직접 영입 제안은 proposeTrade()/proposePoach()에서 성사 확률 판정 자체를 건너뛴다.
+  activateCheatMode(){
+    this.cheatMode = true;
+    this.applyCheatTopUp();
+    this.addMail('시스템', '🎮 치트 모드 활성화', '"초보자" 감독으로 커리어를 시작해 치트 모드가 활성화되었습니다.\n- 자금 무제한\n- R&D 포인트 무제한\n- 트레이드/직접 영입 제안 100% 성사', 'breaking');
+  },
+  applyCheatTopUp(){
+    if(!this.cheatMode) return;
+    const myTeam = this.teams[this.playerTeamIdx];
+    if(!myTeam) return;
+    if(myTeam.budget < 999999) myTeam.budget = 999999;
+    if(myTeam.rdPoints < 9999) myTeam.rdPoints = 9999;
+  },
   // 커리어 시작 시 1회만 등장하는 팀 선택 화면. 선택 즉시 저장하고 게임을 시작한다.
   showTeamSelectScreen(){
     const grid = document.getElementById('teamSelectGrid');
@@ -2765,12 +3140,13 @@ const Game = {
     grid.querySelectorAll('.team-pick').forEach(btn=>{
       btn.addEventListener('click', ()=>{
         this.playerTeamIdx = parseInt(btn.dataset.idx);
+        this.careerTeamHistory.push({ season:this.season, teamName: this.teams[this.playerTeamIdx].name });
         document.getElementById('teamSelectOverlay').classList.remove('show');
         tip.classList.remove('show');
         this.saveGame();
         this.finishInit();
       });
-      // 팀 위에 마우스를 올리면 창단 연도/통산 GPDC·GPCC 우승 횟수/한 줄 역사를 담은 카드가 팝업된다.
+      // 팀 위에 마우스를 올리면 창단 연도/통산 WDC·WCC 우승 횟수/한 줄 역사를 담은 카드가 팝업된다.
       btn.addEventListener('mouseenter', (e)=>{
         const t = this.teams[parseInt(btn.dataset.idx)];
         const hist = TEAM_HISTORY[t.name];
@@ -2778,8 +3154,8 @@ const Game = {
         tip.innerHTML = `
           <h5>${t.name}</h5>
           <div class="th-row"><span>창단 연도</span><b>${hist.founded}</b></div>
-          <div class="th-row"><span>GPDC 우승</span><b>${hist.wdc}회</b></div>
-          <div class="th-row"><span>GPCC 우승</span><b>${hist.wcc}회</b></div>
+          <div class="th-row"><span>WDC 우승</span><b>${hist.wdc}회</b></div>
+          <div class="th-row"><span>WCC 우승</span><b>${hist.wcc}회</b></div>
           <div class="th-blurb">${hist.blurb}</div>
         `;
         tip.classList.add('show');
@@ -2822,7 +3198,7 @@ const Game = {
       this.drawnCard = null; this._dnsTargetDriver = null; this._gridPenaltySlot = null;
       this.pitSpeedMult = 1; this.wearMult = 1;
       this.teams[this.playerTeamIdx].drivers.forEach(d=>{ d.setup = {frontWing:5, suspension:5}; });
-      // 실제 UGP 캘린더 순서대로 다음 서킷으로 자동 이동(racesThisSeason이 곧 다음 서킷의 인덱스가 된다)
+      // 실제 F1 캘린더 순서대로 다음 서킷으로 자동 이동(racesThisSeason이 곧 다음 서킷의 인덱스가 된다)
       this.trackKey = TRACK_ORDER[this.racesThisSeason % TRACK_ORDER.length];
       document.getElementById('trackSelect').value = this.trackKey;
       this.startStage('FP1');
@@ -2839,6 +3215,9 @@ const Game = {
     // 새 레이스 주말이 시작될 때(FP1)만 점검: 파워유닛 내구도가 심각한 수준(15% 미만)이면 강제로
     // 새 유닛으로 교체하고, 이번 주말의 퀄리파잉 결과에 그리드 페널티를 예약한다.
     if(stage==='FP1'){
+      // 감독 이적 제의를 수락했다면 새 레이스 주말이 시작되는 지금이 안전하게 팀을 전환할 시점이다
+      // (이 아래의 모든 로직이 this.playerTeamIdx를 참조하므로 반드시 가장 먼저 적용해야 한다).
+      this.applyPendingTeamSwitch();
       this.teams.forEach(team=>{
         team.drivers.forEach(d=>{
           if(d.enginePUWear < 15){
@@ -2851,6 +3230,8 @@ const Game = {
           }
         });
       });
+      // 부상 시스템: 이번 주말이 시작되는 시점에 부상 중인 드라이버의 대타 배정/회복 여부를 갱신한다.
+      this.processInjurySubstitution();
       // 이번 레이스 주말의 서브 스폰서 미션 후보를 생성한다(안전 vs 공격적). 주간 대시보드에서
       // 미리 골라둔 선택이 있으면 그대로 적용하고, 없으면 기본값(안전 미션)을 사용한다.
       this._weekendMissions = this.generateWeekendMissions();
@@ -2897,6 +3278,15 @@ const Game = {
     const wBadge = document.getElementById('weatherBadge');
     if(wBadge) wBadge.textContent = this.engine.weather==='Rain' ? '🌧️ 비' : '☀️ 맑음';
     this.renderWeatherForecast();
+    // 프리레이스 브리핑(관중 수 + 해설자 코멘트): 메인 레이스에서만, 세션이 시작되는 이 시점에
+    // 한 번 정해두고 준비 화면(포메이션 랩 모달)에서 그대로 보여준다.
+    if(stage==='RACE'){
+      const trackSeed = [...this.trackKey].reduce((s,c)=>s+c.charCodeAt(0),0);
+      const baseAttendance = 55000 + (trackSeed*137)%70000;
+      const excitementBonus = Math.round((this.managerReputation-50)*300);
+      this.engine.attendance = Math.max(30000, Math.round(baseAttendance + excitementBonus + (Math.random()-0.5)*10000));
+      this.engine.preRaceCommentary = this.generatePreRaceCommentary();
+    }
 
     // 카드 효과 - DNS: 대상 드라이버는 이번 주말 퀄리파잉(Q1~Q3)과 메인 레이스 전체에 출전하지 못한다.
     // (예전에는 RACE 단계에서만 적용되어 퀄리는 정상 참가할 수 있었던 허점을 막는다)
@@ -3058,10 +3448,80 @@ const Game = {
     this._fastForwarding = true;
     this.engine.running = true;
     let iter=0;
-    while(!this.engine.finished && iter<300000){ this.engine.tick(0.2); this.drainEngineEventQueues(); iter++; }
+    // [버그 수정] 매 틱을 정확히 고정된 0.2초로 진행하면 섹터/랩타임이 전부 0.2초의 배수로만 찍혀
+    // 랩/인터벌 표시가 "소수점 1~2자리만 의미 있고 나머지는 항상 0"인 것처럼 부자연스럽게 보였다
+    // (예: +0.600, +0.400, +1.600 — 실제 F1처럼 임의의 3자리 소수처럼 보이지 않음). 평균은 0.2초로
+    // 동일하게 유지하되(총 반복 횟수·성능은 그대로) 매 틱마다 미세하게 흔들어 실제 주행처럼 자연스러운
+    // 소수점 3자리 값이 나오도록 한다.
+    while(!this.engine.finished && iter<300000){ this.engine.tick(0.15+Math.random()*0.1); this.drainEngineEventQueues(); iter++; }
     this._fastForwarding = false;
     this.handleSessionEnd();
     this.drawTrack(); this.renderStandings(); this.renderTelemetry(); this.renderRadioLog(); this.renderOvertakeLog();
+  },
+
+  // 부상 시스템: 충돌(collisionDamage) 사고 중 일부만 드라이버 부상으로 이어진다. 이미 부상 중인
+  // 드라이버는 중복으로 다치지 않는다. 부상 시 즉시 이번 레이스에서 리타이어 처리되고, 다음 1~2경기는
+  // 리저브(또는 긴급 영입) 드라이버가 대신 뛴다(processInjurySubstitution이 매 FP1마다 관리).
+  rollDriverInjury(car){
+    const d = car.driver;
+    if(d.injuredRaces>0) return;
+    if(Math.random() > 0.1) return; // 충돌 중 10%만 부상으로 이어짐
+    const missRaces = 1 + Math.floor(Math.random()*2);
+    d.injuredRaces = missRaces;
+    if(car.status==='running'){ car.status='retired'; car.retireReason='injury'; }
+    this.addMail('의료팀', `🚑 [부상] ${d.name} 선수 부상`,
+      `${d.name} 선수가 사고 충격으로 부상을 입어 이번 레이스를 마치지 못했습니다.\n의료팀 진단 결과 앞으로 ${missRaces}경기 결장이 예상되며, 다음 레이스부터 대타 드라이버가 대신 출전합니다.`, 'breaking');
+    if(this.engine.sessionKind==='race'){
+      this.showDecisionPause('드라이버 부상', `${d.name} 선수가 부상으로 ${missRaces}경기 결장합니다. 잠시 후 대타 드라이버 배정 소식을 메일함에서 확인하세요.`);
+    }
+    this.saveGame();
+  },
+  // 매 레이스 주말 시작(FP1)마다 호출 — 부상 중인 드라이버가 있으면 대타를 투입/유지하고, 결장
+  // 경기 수를 소진하면 원래 드라이버를 로스터로 복귀시킨다. 내 팀 로스터만 관리한다.
+  processInjurySubstitution(){
+    const team = this.teams[this.playerTeamIdx];
+    if(team.injuredSwap){
+      const { slot, injuredDriver } = team.injuredSwap;
+      injuredDriver.injuredRaces = Math.max(0, injuredDriver.injuredRaces - 1);
+      if(injuredDriver.injuredRaces<=0){
+        const substitute = team.drivers[slot];
+        team.drivers[slot] = injuredDriver;
+        if(!team.reserves) team.reserves = [];
+        team.reserves.push(substitute);
+        team.injuredSwap = null;
+        this.addMail('의료팀', `✅ [부상 복귀] ${injuredDriver.name}`,
+          `${injuredDriver.name} 선수가 부상에서 완전히 회복해 이번 주말부터 다시 본선에 출전합니다.\n대타로 뛰었던 ${substitute.name} 선수는 리저브로 복귀합니다.`, 'breaking');
+        this.renderTransfer(); this.saveGame();
+      }
+      return;
+    }
+    team.drivers.forEach((d,slot)=>{
+      if(team.injuredSwap || d.injuredRaces<=0) return;
+      let substitute = null;
+      if(team.reserves && team.reserves.length){
+        substitute = team.reserves.shift();
+      } else {
+        if(!this.marketPool) this.marketPool = [];
+        const emergency = this.marketPool.find(x=>x!==d);
+        if(emergency){
+          const idx = this.marketPool.indexOf(emergency);
+          this.marketPool.splice(idx,1);
+          substitute = emergency;
+        }
+      }
+      if(substitute){
+        substitute.role = d.role;
+        substitute.contractYears = Math.max(1, substitute.contractYears||1);
+        substitute.contractSalary = substitute.contractSalary || calcSalary(substitute);
+        team.injuredSwap = { slot, injuredDriver: d };
+        team.drivers[slot] = substitute;
+        this.addMail('이사회', `🚑 [대타 출전] ${substitute.name}`,
+          `부상당한 ${d.name} 선수를 대신해 ${substitute.name} 선수가 이번 주말부터 대타로 출전합니다.`);
+      } else {
+        this.addMail('이사회', `⚠️ [대타 부재] ${d.name}`,
+          `${d.name} 선수의 공백을 메울 리저브·자유계약 드라이버가 없습니다. 이적시장에서 긴급 영입을 고려해주세요.`);
+      }
+    });
   },
 
   // 프랙티스 셋업 라디오 / 돌발 사고(엔진 트러블·펑처·스핀) 이벤트 큐를 비우고 UI·예산에 반영
@@ -3088,6 +3548,10 @@ const Game = {
             // 남은 드라이버의 피트 전략을 바로 점검할 수 있게 한다.
             if(this.engine.sessionKind==='race') this.showDecisionPause('대형 사고 발생', `${ev.car.driver.name} 선수가 엔진 트러블로 리타이어했습니다. 남은 드라이버의 피트 전략을 점검하세요.`);
           }
+        } else if(ev.type==='collisionDamage'){
+          // 부상 시스템: 충돌 사고 중 일부만 드라이버 부상으로 이어진다(내 팀·레이스 세션 한정).
+          if(this.engine.isMyTeamCar(ev.car) && this.engine.sessionKind==='race') this.rollDriverInjury(ev.car);
+          if(this.engine.isMyTeamCar(ev.car)) this.queueRadio(ev.car, ev.type);
         } else if(this.engine.isMyTeamCar(ev.car)){
           this.queueRadio(ev.car, ev.type); // 'puncture' | 'spin'
         }
@@ -3105,6 +3569,13 @@ const Game = {
         } else if(ev.type==='safetyCarEnd'){
           this.hideRaceBanner();
           this.addMail('레이스 컨트롤', '[세이프티카 해제]', '세이프티카가 피트로 복귀했습니다. 레이스가 정상적으로 재개됩니다.');
+        } else if(ev.type==='vscStart'){
+          this.showRaceBanner('vsc', '🟦 VIRTUAL SAFETY CAR', '전 차량 델타 페이스 준수 · 추월 금지');
+          this.addMail('레이스 컨트롤', '[가상 세이프티카 발동]', `${ev.reason?ev.reason.name+' 선수의 ':''}경미한 사고 수습을 위해 가상 세이프티카(VSC)가 발동되었습니다.\n실제 세이프티카보다는 약하지만 추월은 여전히 금지되며, 피트 손해가 다소 줄어드는 타이밍입니다.`);
+          this.showDecisionPause('가상 세이프티카 발동', 'VSC가 발동되어 피트 손해가 다소 줄어드는 타이밍입니다. 지금 피트인할까요?');
+        } else if(ev.type==='vscEnd'){
+          this.hideRaceBanner();
+          this.addMail('레이스 컨트롤', '[가상 세이프티카 해제]', '가상 세이프티카가 해제되었습니다. 레이스가 정상적으로 재개됩니다.');
         } else if(ev.type==='redFlagStart'){
           // 주의: engine.running은 그대로 true를 유지해야 한다 — tick() 내부에서 레드플래그
           // 타이머 감소 및 자동 해제 판정이 이루어지므로, 여기서 running을 꺼버리면 영원히 멈춘다.
@@ -3165,6 +3636,17 @@ const Game = {
   hideRaceBanner(){
     const el = document.getElementById('raceBanner');
     el.className = '';
+  },
+  // 관중 반응 토스트: 내 팀 드라이버가 관련된 추월이 벌어질 때 짧게 떴다 사라지는 연출.
+  // 연속으로 여러 번 호출되어도(예: 같은 프레임에 팀 동료끼리 순위가 바뀐 경우) 항상 최신 반응이
+  // 보이도록, 클래스를 껐다 켜서 CSS 애니메이션을 강제로 재시작한다.
+  showCrowdReaction(text, tone){
+    const el = document.getElementById('crowdReaction');
+    if(!el) return;
+    el.textContent = text;
+    el.className = '';
+    void el.offsetWidth; // 리플로우를 강제해 애니메이션이 처음부터 다시 재생되게 한다
+    el.className = `show ${tone}`;
   },
   // 결정적 순간 자동 일시정지(Decision Time): 갑작스러운 강수, 대형 사고, 세이프티카 발동처럼 즉각적인
   // 전략 판단이 필요한 순간에 시뮬레이션을 자동으로 멈추고 빠른 피트 전략 팝업을 띄운다.
@@ -3295,7 +3777,87 @@ const Game = {
     this.startingTyreChoice = [null,null];
     document.querySelectorAll('#formationLapOverlay button[data-choice]').forEach(b=> b.classList.remove('selected'));
     this.renderStartingTyreBody();
+    this.renderTrackInfo();
+    this.renderFormationWeatherInfo();
+    this.renderPreRaceBriefing();
     document.getElementById('formationLapOverlay').classList.add('show');
+  },
+  // 이번 레이스 서킷의 위치·역사 정보(TRACK_HISTORY)를 보여준다. 실제 F1 서킷들의 실존 정보를
+  // 담고 있으며, 새로 계산하는 값 없이 고정 데이터를 그대로 표시만 한다.
+  renderTrackInfo(){
+    const el = document.getElementById('formationTrackInfo');
+    if(!el || !this.engine) return;
+    const track = this.engine.track;
+    const hist = TRACK_HISTORY[this.trackKey];
+    const rec = this.trackRecords[this.trackKey];
+    let recordRow;
+    if(!rec || rec.visits===0){
+      recordRow = `<div class="fw-row"><span>우리 팀 전적</span><b>이번이 첫 방문입니다</b></div>`;
+    } else {
+      const bestLabel = rec.bestPos!=null ? `${rec.bestPos}위 (${rec.bestSeason}시즌)` : '완주 기록 없음';
+      recordRow = `<div class="fw-row"><span>우리 팀 전적</span><b>${rec.visits}전 ${rec.wins}승 ${rec.podiums}포디움 · 최고 ${bestLabel}</b></div>`;
+    }
+    el.innerHTML = `
+      <div class="fw-row"><span>서킷</span><b>${track.name}</b></div>
+      <div class="fw-row"><span>위치</span><b>${hist ? `${hist.city}, ${track.country}` : track.country}</b></div>
+      ${hist ? `<div class="fw-row"><span>개장 연도</span><b>${hist.opened}년</b></div>` : ''}
+      <div class="fw-row"><span>트랙 길이</span><b>${track.lengthKm}km · ${track.corners}코너</b></div>
+      ${recordRow}
+      ${hist ? `<p style="color:var(--text-2); font-size:11.5px; line-height:1.6; margin:6px 0 0;">${hist.blurb}</p>` : ''}
+    `;
+  },
+  // 레이스 시작 전 준비 단계(포메이션 랩 모달)에서 이번 레이스의 날씨와, 도중에 비가 올 것으로
+  // 예보되어 있다면 몇 랩째 올지·확률까지 미리 확인할 수 있게 한다. 데이터 자체는 이미
+  // buildEngineForStage('RACE')에서 결정되어 있으므로 여기서는 표시만 담당한다.
+  renderFormationWeatherInfo(){
+    const el = document.getElementById('formationWeatherInfo');
+    if(!el || !this.engine) return;
+    const weather = this.engine.weather;
+    let rows = `<div class="fw-row"><span>현재 날씨</span><b class="${weather==='Rain'?'rain':''}">${weather==='Rain'?'🌧️ 비':'☀️ 맑음'}</b></div>`;
+    if(this.engine.weatherWillChange){
+      rows += `<div class="fw-row"><span>레이스 중 날씨 변화 예보</span><b class="rain">☔ 약 ${this.engine.weatherChangeLap}랩째 비 올 확률 ${this.engine.weatherChangeChance}%</b></div>`;
+    } else {
+      rows += `<div class="fw-row"><span>레이스 중 날씨 변화 예보</span><b>변화 없음(예상)</b></div>`;
+    }
+    el.innerHTML = rows;
+  },
+  // 해설자 프리레이스 코멘트 2~3줄: 날씨/트랙 특성, 우리 팀 등급 기반 전망, (있다면) 라이벌리
+  // 스토리라인까지 — 전부 이미 계산되어 있는 게임 상태를 문장으로 풀어 쓸 뿐, 새 판정은 없다.
+  generatePreRaceCommentary(){
+    const myTeam = this.teams[this.playerTeamIdx];
+    const lines = [];
+    if(this.engine.weather==='Rain'){
+      lines.push('오늘 트랙 컨디션은 예측불허입니다 — 타이어 선택이 승부를 가를 수 있습니다.');
+    } else if(this.engine.weatherWillChange){
+      lines.push('지금은 맑지만, 레이스 도중 날씨가 바뀔 가능성이 있어 팀들의 전략적 판단이 중요해질 전망입니다.');
+    } else {
+      const charLabel = {technical:'테크니컬한 코너 구간', 'high-speed':'고속 스트레이트', balanced:'밸런스 잡힌 레이아웃'}[this.engine.track.character] || '독특한 레이아웃';
+      lines.push(`${charLabel}이(가) 특징인 서킷에서 오늘 어떤 전략이 통할지 지켜보시죠.`);
+    }
+    const tierLine = {
+      S: '역시 상위권 팀답게 오늘도 유력한 우승 후보로 꼽힙니다.',
+      A: '미드필드 다크호스로 깜짝 활약을 노려볼 만합니다.',
+      B: '쉽지 않은 하루가 예상되지만, 이변은 늘 가능성으로 남아있습니다.',
+    }[myTeam.tier];
+    lines.push(`${myTeam.name}은(는) ${tierLine}`);
+    const rivalDriver = myTeam.drivers.find(d=> Object.values(d.rivalryTotals||{}).some(c=>c>=2));
+    if(rivalDriver){
+      const [rivalName, count] = Object.entries(rivalDriver.rivalryTotals).sort((a,b)=>b[1]-a[1])[0];
+      lines.push(`${rivalDriver.name} 선수와(과) ${rivalName} 선수의 통산 ${count}번째 맞대결이 오늘 다시 성사될지도 관심사입니다.`);
+    }
+    return lines;
+  },
+  // 레이스 시작 전 준비 단계에서 관중 수 + 해설자 코멘트를 보여준다. 데이터는 buildEngineForStage
+  // ('RACE')에서 이미 정해두었으므로 여기서는 표시만 담당한다.
+  renderPreRaceBriefing(){
+    const el = document.getElementById('formationBroadcastInfo');
+    if(!el || !this.engine || this.engine.attendance==null) return;
+    el.innerHTML = `
+      <div class="fw-row"><span>관중 수</span><b>👥 ${this.engine.attendance.toLocaleString()}명 운집</b></div>
+      <div class="broadcast-commentary">
+        ${(this.engine.preRaceCommentary||[]).map(line=>`<p>🎙️ "${line}"</p>`).join('')}
+      </div>
+    `;
   },
   // 레이스 시작 전 각 드라이버의 스타팅 타이어(Soft/Medium/Hard/Intermediate/Wet)를 선택하는 UI.
   // 한정된 타이어 세트 풀 안에서 실제 남은 수량을 확인하며 고를 수 있다(0장 남은 컴파운드는 비활성화).
@@ -3456,165 +4018,31 @@ const Game = {
     document.querySelectorAll('#setupPanel button[data-adj]').forEach(()=>{}); // 실제 바인딩은 renderSetupPanel에서 매 렌더마다 수행
   },
 
-  /* ---------------- 오디오: 배경음악(BGM) + 엔진음 + 성공 차임 (Web Audio API로 합성, 외부 음원 파일 불필요) ----------------
-     기존의 거친 톱니파 엔진음과 노이즈 버스트 관중 함성이 불쾌하다는 피드백에 따라 전면 재설계:
-     - BGM: 잔잔한 패드 코드가 저역통과 필터 + 느린 LFO로 숨쉬듯 유지되는 앰비언트 루프(항상 낮은 볼륨으로 재생)
-     - 엔진음: 톱니파 1개 + 로우패스 필터로 거친 배음을 걸러내 부드러운 럼블 사운드로 정돈
-     - 성공 차임: 노이즈 버스트 대신 맑은 사인파 3화음 아르페지오("딩")로 추월/포디움 순간을 축하 */
+  /* ---------------- 오디오: 피트인 확인음 전용 (Web Audio API로 합성, 외부 음원 파일 불필요) ----------------
+     사용자 요청에 따라 배경음악·엔진음·성공 차임을 전부 제거하고 피트인 확인음만 남겼다.
+     startEngineSound()/stopEngineSound()/updateEngineSound()/playChime()은 다른 코드 곳곳에서
+     호출되므로 함수 자체는 남겨두되(호출부를 일일이 제거하다 실수하는 것을 방지), 내부에서
+     아무 소리도 내지 않는 빈 함수로 바꿔 안전하게 무력화했다. */
   bindAudioControls(){
     document.getElementById('muteBtn').addEventListener('click', ()=>{
       this.audio.muted = !this.audio.muted;
       document.getElementById('muteBtn').textContent = this.audio.muted ? '🔇' : '🔊';
-      if(this.audio.ctx){
-        const now = this.audio.ctx.currentTime;
-        if(this.audio.bgmGain) this.audio.bgmGain.gain.setTargetAtTime(this.audio.muted?0:0.10, now, 0.3);
-        if(this.audio.engineGain){
-          const target = (!this.audio.muted && this.engine && this.engine.running) ? 0.09 : 0;
-          this.audio.engineGain.gain.setTargetAtTime(target, now, 0.2);
-        }
-      }
     });
   },
   // 실제 AudioContext는 반드시 사용자 제스처(클릭 등) 안에서 생성/재개해야 브라우저 자동재생 정책을 통과한다.
+  // 피트인 확인음(playPitBeep)이 필요할 때 지연 생성한다.
   ensureAudioContext(){
     if(this.audio.ctx) return;
     const Ctx = window.AudioContext || window.webkitAudioContext;
     if(!Ctx) return;
-    const ctx = new Ctx();
-    this.audio.ctx = ctx;
-
-    // ---- BGM: 레이싱에 어울리는 리듬감 있는 드라이빙 트랙 (베이스 펄스 + 킥 + 하이햇 + 아르페지오) ----
-    // 코드 진행(Am-F-C-G, 단조 기반의 긴장감 있는 드라이빙 진행) 위에서 매 16분음표마다 노트를
-    // 새로 트리거하는 시퀀서 방식 — 모두 오실레이터/노이즈를 코드로 즉석 합성하므로 외부 음원이 전혀 없다.
-    const bgmGain = ctx.createGain(); bgmGain.gain.value = this.audio.muted?0:0.10; bgmGain.connect(ctx.destination);
-    const bgmFilter = ctx.createBiquadFilter(); bgmFilter.type='lowpass'; bgmFilter.frequency.value=2200; bgmFilter.Q.value=0.4;
-    bgmFilter.connect(bgmGain);
-    this.audio.bgmGain = bgmGain; this.audio.bgmFilter = bgmFilter;
-    this.audio.bgmNextNoteTime = ctx.currentTime + 0.1;
-    this.audio.bgmStep = 0;
-    if(this.audio.bgmSchedulerTimer) clearInterval(this.audio.bgmSchedulerTimer);
-    this.audio.bgmSchedulerTimer = setInterval(()=> this.scheduleBgmSteps(), 25);
-
-    // ---- 엔진음: 톱니파 1개 + 로우패스 필터로 거친 고배음을 걸러낸 부드러운 럼블 ----
-    const engGain = ctx.createGain(); engGain.gain.value = 0;
-    const engFilter = ctx.createBiquadFilter(); engFilter.type='lowpass'; engFilter.frequency.value=260; engFilter.Q.value=0.8;
-    const engOsc = ctx.createOscillator(); engOsc.type='sawtooth'; engOsc.frequency.value=70;
-    engOsc.connect(engFilter).connect(engGain).connect(ctx.destination);
-    engOsc.start();
-    this.audio.engineOsc = engOsc; this.audio.engineFilter = engFilter; this.audio.engineGain = engGain;
+    this.audio.ctx = new Ctx();
   },
-  // BGM 시퀀서 — 표준 "lookahead" 스케줄링 패턴: 짧은 간격(25ms)으로 깨어나 다음 0.1초 구간 안에
-  // 들어올 노트들을 미리 예약한다(setInterval 자체의 타이밍 지터에 영향받지 않도록 하기 위함).
-  scheduleBgmSteps(){
-    if(!this.audio.ctx) return;
-    const ctx = this.audio.ctx;
-    const secondsPerStep = 60/BGM_TEMPO/4; // 16분음표 길이
-    while(this.audio.bgmNextNoteTime < ctx.currentTime + 0.1){
-      this.playBgmStep(this.audio.bgmStep, this.audio.bgmNextNoteTime);
-      this.audio.bgmNextNoteTime += secondsPerStep;
-      this.audio.bgmStep = (this.audio.bgmStep+1) % (BGM_CHORDS.length*32); // 코드당 32스텝(2마디) x 4코드 = 한 바퀴
-    }
-  },
-  // 한 스텝(16분음표)에서 울릴 악기들을 결정한다: 베이스(4분음표) · 킥(1,3박) · 하이햇(엇박 8분음표) · 아르페지오(8분음표).
-  // [버그 수정] 아르페지오를 16분음표마다(초당 8.4개) 계속 울리면 한 음 한 음이 구분되지 않고
-  // 뭉개져서 "웅~" 하는 잡음처럼 들렸다 — 8분음표(절반 속도)로 늦춰 각 음이 또렷이 들리게 했다.
-  playBgmStep(step, time){
-    const chord = BGM_CHORDS[Math.floor(step/32) % BGM_CHORDS.length];
-    const stepInBar = step % 16;
-    if(stepInBar%4===0) this.playBgmBass(chord.root, time);
-    if(stepInBar===0 || stepInBar===8) this.playBgmKick(time);
-    if(stepInBar%4===2) this.playBgmHat(time);
-    if(step%2===0) this.playBgmArpNote(chord.notes[Math.floor(step/2) % chord.notes.length], time);
-  },
-  playBgmBass(freq, time){
-    const ctx = this.audio.ctx;
-    const osc = ctx.createOscillator(); osc.type='sawtooth'; osc.frequency.setValueAtTime(freq, time);
-    const filt = ctx.createBiquadFilter(); filt.type='lowpass'; filt.frequency.value=500; filt.Q.value=1;
-    const g = ctx.createGain();
-    g.gain.setValueAtTime(0.0001, time);
-    g.gain.exponentialRampToValueAtTime(0.28, time+0.02);
-    g.gain.exponentialRampToValueAtTime(0.0001, time+0.22);
-    osc.connect(filt).connect(g).connect(this.audio.bgmGain);
-    osc.start(time); osc.stop(time+0.25);
-  },
-  playBgmKick(time){
-    const ctx = this.audio.ctx;
-    const osc = ctx.createOscillator(); osc.type='sine';
-    osc.frequency.setValueAtTime(150, time);
-    osc.frequency.exponentialRampToValueAtTime(40, time+0.12);
-    const g = ctx.createGain();
-    g.gain.setValueAtTime(0.5, time);
-    g.gain.exponentialRampToValueAtTime(0.001, time+0.16);
-    osc.connect(g).connect(this.audio.bgmGain);
-    osc.start(time); osc.stop(time+0.18);
-  },
-  playBgmHat(time){
-    const ctx = this.audio.ctx;
-    const bufferSize = Math.floor(ctx.sampleRate*0.05);
-    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for(let i=0;i<bufferSize;i++) data[i] = (Math.random()*2-1) * (1-i/bufferSize);
-    const noise = ctx.createBufferSource(); noise.buffer = buffer;
-    const filt = ctx.createBiquadFilter(); filt.type='highpass'; filt.frequency.value=6000;
-    const g = ctx.createGain(); g.gain.value=0.05;
-    noise.connect(filt).connect(g).connect(this.audio.bgmGain);
-    noise.start(time);
-  },
-  playBgmArpNote(freq, time){
-    const osc = this.audio.ctx.createOscillator(); osc.type='triangle'; osc.frequency.setValueAtTime(freq, time);
-    const g = this.audio.ctx.createGain();
-    g.gain.setValueAtTime(0.0001, time);
-    g.gain.exponentialRampToValueAtTime(0.12, time+0.012);
-    g.gain.exponentialRampToValueAtTime(0.0001, time+0.2);
-    osc.connect(g).connect(this.audio.bgmFilter);
-    osc.start(time); osc.stop(time+0.22);
-  },
-  startEngineSound(){
-    this.ensureAudioContext();
-    if(!this.audio.ctx) return;
-    if(this.audio.ctx.state==='suspended') this.audio.ctx.resume();
-    if(this.audio.muted) return;
-    // [버그 수정] 엔진음(0.09)이 BGM(과거 0.06)보다 더 커서 음악이 엔진 소리에 묻혀 거의 들리지
-    // 않았다 — 엔진음을 살짝 낮추고 BGM을 키워 둘 다 또렷이 들리도록 균형을 다시 잡았다.
-    this.audio.engineGain.gain.setTargetAtTime(0.07, this.audio.ctx.currentTime, 0.3);
-  },
-  stopEngineSound(){
-    if(!this.audio.ctx) return;
-    this.audio.engineGain.gain.setTargetAtTime(0, this.audio.ctx.currentTime, 0.3);
-  },
-  // 매 프레임 선택된 내 차량의 상태(타이어 그립/ERS)를 반영해 엔진음 필터 컷오프를 살짝 흔들어준다(RPM 흉내).
-  updateEngineSound(){
-    if(!this.audio.ctx || !this.engine || !this.engine.running || this.audio.muted) return;
-    const car = this.selectedCar();
-    if(!car) return;
-    const comp = COMPOUNDS[car.compound];
-    const factorApprox = comp.speedMult + (car.ersMode==='Overtake'?0.05:0) - (car.tireWear<20?0.08:0);
-    const targetFreq = 60 + factorApprox*70;
-    const now = this.audio.ctx.currentTime;
-    this.audio.engineOsc.frequency.setTargetAtTime(targetFreq, now, 0.25);
-    this.audio.engineFilter.frequency.setTargetAtTime(160+factorApprox*260, now, 0.25);
-  },
-  // 성공 차임: 맑은 사인파 3화음 아르페지오("딩"). 추월 성공/포디움 피니시 등 기분 좋은 순간에 트리거.
-  playChime(){
-    this.ensureAudioContext();
-    if(!this.audio.ctx || this.audio.muted) return;
-    const ctx = this.audio.ctx;
-    const now = ctx.currentTime;
-    if(now - this.audio.lastChimeAt < 2) return; // 너무 잦은 중첩 방지
-    this.audio.lastChimeAt = now;
-    const notes = [523.25, 659.25, 783.99]; // C5 - E5 - G5 밝은 장3화음
-    notes.forEach((freq,i)=>{
-      const osc = ctx.createOscillator(); osc.type='sine'; osc.frequency.value=freq;
-      const g = ctx.createGain();
-      const t0 = now + i*0.09;
-      g.gain.setValueAtTime(0, t0);
-      g.gain.linearRampToValueAtTime(0.16, t0+0.02);
-      g.gain.exponentialRampToValueAtTime(0.0001, t0+0.6);
-      osc.connect(g).connect(ctx.destination);
-      osc.start(t0); osc.stop(t0+0.65);
-    });
-  },
-  // 피트인 확정 시 재생되는 짧은 2연타 삐빅음 — 무전 확인음 느낌의 사각파 비프 2회.
+  // 더 이상 아무 소리도 내지 않는다(호출부 호환을 위해 함수만 유지).
+  startEngineSound(){},
+  stopEngineSound(){},
+  updateEngineSound(){},
+  playChime(){},
+  // 피트인 확정 시 재생되는 짧은 2연타 삐빅음 — 무전 확인음 느낌의 사각파 비프 2회. (유일하게 남은 효과음)
   playPitBeep(){
     this.ensureAudioContext();
     if(!this.audio.ctx || this.audio.muted) return;
@@ -3635,9 +4063,29 @@ const Game = {
   /* ---------------- 저장/불러오기 (localStorage) — 육성 진행 상황이 재접속 후에도 이어지도록 ---------------- */
   serializeGame(){
     const staffOut = s=>({name:s.name, role:s.role, skill:s.skill, subSkills:s.subSkills, contractYears:s.contractYears, contractSalary:s.contractSalary});
+    const driverOut = d=>({
+      name:d.name, code:d.code, number:d.number, stats:d.stats, age:d.age, height:d.height, morale:d.morale, setup:d.setup,
+      enginePUWear:d.enginePUWear, pendingGridPenalty:d.pendingGridPenalty, champPoints:d.champPoints,
+      contractYears:d.contractYears, contractSalary:d.contractSalary, role:d.role,
+      fatigue:d.fatigue, raceRustPenalty:d.raceRustPenalty, powerUnitsUsedThisSeason:d.powerUnitsUsedThisSeason,
+      chassisDamage:d.chassisDamage, poachThreat:d.poachThreat, rivalryTotals:d.rivalryTotals, fanCount:d.fanCount,
+      injuredRaces:d.injuredRaces,
+    });
     return {
       v: 1,
       playerTeamIdx: this.playerTeamIdx,
+      managerName: this.managerName, managerNationality: this.managerNationality,
+      cheatMode: this.cheatMode, managerReputation: this.managerReputation, pendingTeamSwitch: this._pendingTeamSwitch,
+      peakReputation: this.peakReputation, careerStats: this.careerStats, careerTeamHistory: this.careerTeamHistory,
+      trackRecords: this.trackRecords,
+      pendingSeasonOffers: this.pendingSeasonOffers.map(o=>({
+        offerTeamIdx:o.offerTeamIdx, rslot:this.teams[o.offerTeamIdx].drivers.indexOf(o.driverRef),
+        mySlot:o.mySlot, offeredSalary:o.offeredSalary, offeredYears:o.offeredYears, competitorCount:o.competitorCount,
+      })),
+      confirmedTransfers: this.confirmedTransfers.map(o=>({
+        offerTeamIdx:o.offerTeamIdx, rslot:this.teams[o.offerTeamIdx].drivers.indexOf(o.driverRef),
+        mySlot:o.mySlot, offeredSalary:o.offeredSalary, offeredYears:o.offeredYears,
+      })),
       trackKey: this.trackKey,
       season: this.season, racesThisSeason: this.racesThisSeason, aiTransfersThisSeason: this.aiTransfersThisSeason,
       mails: this.mails,
@@ -3645,6 +4093,7 @@ const Game = {
       hallOfFame: this.hallOfFame,
       careerFastestPitStop: this.careerFastestPitStop,
       offseasonDay: this.offseasonDay,
+      offseasonThreatCount: this._offseasonThreatCount || 0,
       marketPool: this.marketPool ? this.marketPool.map(d=>({
         name:d.name, code:d.code, number:d.number, stats:d.stats, age:d.age, height:d.height, morale:d.morale, setup:d.setup,
       })) : null,
@@ -3660,17 +4109,14 @@ const Game = {
       teams: this.teams.map(t=>({
         name: t.name, // 팀 매칭 키
         budget:t.budget, rdPoints:t.rdPoints, trainingPoints:t.trainingPoints, rd:t.rd, carPerf:t.carPerf,
-        politics: t.politics, boardTrust:t.boardTrust, seasonGoal:t.seasonGoal, atrFactor:t.atrFactor,
+        politics: t.politics, boardTrust:t.boardTrust, seasonGoal:t.seasonGoal, atrFactor:t.atrFactor, fanCount:t.fanCount,
         mainSponsorName:t.mainSponsor.name, subSponsorName:t.subSponsor.name,
         pitCrewFatigue:t.pitCrewFatigue, tempPitBonus:t.tempPitBonus, rdProject:t.rdProject,
         engineer: staffOut(t.engineer), pitCrew: staffOut(t.pitCrew),
-        drivers: t.drivers.map(d=>({
-          name:d.name, code:d.code, number:d.number, stats:d.stats, age:d.age, height:d.height, morale:d.morale, setup:d.setup,
-          enginePUWear:d.enginePUWear, pendingGridPenalty:d.pendingGridPenalty, champPoints:d.champPoints,
-          contractYears:d.contractYears, contractSalary:d.contractSalary, role:d.role,
-          fatigue:d.fatigue, raceRustPenalty:d.raceRustPenalty, powerUnitsUsedThisSeason:d.powerUnitsUsedThisSeason,
-          chassisDamage:d.chassisDamage,
-        })),
+        drivers: t.drivers.map(driverOut),
+        // 부상 시스템: 대타가 뛰고 있는 중이면 원래(부상당한) 드라이버의 전체 정보를 함께 보존해야
+        // 세이브/로드 후에도 회복 시 그대로 로스터에 복귀할 수 있다.
+        injuredSwap: t.injuredSwap ? { slot: t.injuredSwap.slot, injuredDriver: driverOut(t.injuredSwap.injuredDriver) } : null,
         academy: (t.academy||[]).map(d=>({
           name:d.name, code:d.code, number:d.number, stats:d.stats, age:d.age, height:d.height, potential:d.potential,
           f2Enrolled:d.f2Enrolled, f2Investment:d.f2Investment, f2Points:d.f2Points,
@@ -3696,6 +4142,15 @@ const Game = {
     if(!data || !Array.isArray(data.teams)) return false;
 
     this.playerTeamIdx = data.playerTeamIdx ?? 0;
+    this.managerName = data.managerName || '익명';
+    this.managerNationality = data.managerNationality || null;
+    this.cheatMode = !!data.cheatMode;
+    this.managerReputation = data.managerReputation!=null ? data.managerReputation : 50;
+    this._pendingTeamSwitch = data.pendingTeamSwitch!=null ? data.pendingTeamSwitch : null;
+    this.peakReputation = data.peakReputation!=null ? data.peakReputation : Math.max(50, this.managerReputation);
+    this.careerStats = data.careerStats || { racesCompleted:0, podiums:0 };
+    this.careerTeamHistory = Array.isArray(data.careerTeamHistory) ? data.careerTeamHistory : [];
+    this.trackRecords = data.trackRecords || {};
     this.trackKey = (data.trackKey && TRACKS[data.trackKey]) ? data.trackKey : 'australia';
     this.season = data.season || 1;
     this.racesThisSeason = data.racesThisSeason || 0;
@@ -3707,6 +4162,7 @@ const Game = {
     this.hallOfFame = Array.isArray(data.hallOfFame) ? data.hallOfFame : [];
     this.careerFastestPitStop = data.careerFastestPitStop!=null ? data.careerFastestPitStop : Infinity;
     this.offseasonDay = data.offseasonDay || 1;
+    this._offseasonThreatCount = data.offseasonThreatCount || 0;
 
     const reviveStaff = (saved, role)=>{
       if(!saved) return new Staff(randomStaffName(role), role, 60);
@@ -3717,6 +4173,26 @@ const Game = {
       s.contractYears = saved.contractYears!=null ? saved.contractYears : 2;
       s.contractSalary = saved.contractSalary || calcStaffSalary(s.skill);
       return s;
+    };
+    const reviveDriver = sd=>{
+      const drv = new Driver(sd.name, sd.code, sd.number, sd.stats, sd.age, sd.height);
+      drv.morale = sd.morale!=null ? sd.morale : 78;
+      drv.setup = sd.setup || {frontWing:5, suspension:5};
+      drv.enginePUWear = sd.enginePUWear!=null ? sd.enginePUWear : 100;
+      drv.pendingGridPenalty = sd.pendingGridPenalty || 0;
+      drv.champPoints = sd.champPoints || 0;
+      drv.contractYears = sd.contractYears!=null ? sd.contractYears : 2;
+      drv.role = sd.role || 'second';
+      drv.contractSalary = sd.contractSalary || calcSalary(drv);
+      drv.fatigue = sd.fatigue!=null ? sd.fatigue : 25;
+      drv.raceRustPenalty = sd.raceRustPenalty || 0;
+      drv.powerUnitsUsedThisSeason = sd.powerUnitsUsedThisSeason || 0;
+      drv.chassisDamage = sd.chassisDamage || 0;
+      drv.poachThreat = sd.poachThreat || null;
+      drv.rivalryTotals = sd.rivalryTotals || {};
+      if(sd.fanCount!=null) drv.fanCount = sd.fanCount;
+      drv.injuredRaces = sd.injuredRaces || 0;
+      return drv;
     };
 
     data.teams.forEach((saved,teamIdx)=>{
@@ -3731,6 +4207,7 @@ const Game = {
       team.boardTrust = saved.boardTrust!=null ? saved.boardTrust : 60;
       team.seasonGoal = saved.seasonGoal || team.seasonGoal;
       team.atrFactor = saved.atrFactor!=null ? saved.atrFactor : 1.0;
+      if(saved.fanCount!=null) team.fanCount = saved.fanCount;
       if(saved.mainSponsorName) team.mainSponsor = MAIN_SPONSORS.find(s=>s.name===saved.mainSponsorName) || team.mainSponsor;
       if(saved.subSponsorName) team.subSponsor = SUB_SPONSORS.find(s=>s.name===saved.subSponsorName) || team.subSponsor;
       team.pitCrewFatigue = saved.pitCrewFatigue!=null ? saved.pitCrewFatigue : 20;
@@ -3738,22 +4215,10 @@ const Game = {
       team.rdProject = saved.rdProject || null;
       team.engineer = reviveStaff(saved.engineer, 'engineer');
       team.pitCrew = reviveStaff(saved.pitCrew, 'pitCrew');
-      team.drivers = saved.drivers.map(sd=>{
-        const drv = new Driver(sd.name, sd.code, sd.number, sd.stats, sd.age, sd.height);
-        drv.morale = sd.morale!=null ? sd.morale : 78;
-        drv.setup = sd.setup || {frontWing:5, suspension:5};
-        drv.enginePUWear = sd.enginePUWear!=null ? sd.enginePUWear : 100;
-        drv.pendingGridPenalty = sd.pendingGridPenalty || 0;
-        drv.champPoints = sd.champPoints || 0;
-        drv.contractYears = sd.contractYears!=null ? sd.contractYears : 2;
-        drv.role = sd.role || 'second';
-        drv.contractSalary = sd.contractSalary || calcSalary(drv);
-        drv.fatigue = sd.fatigue!=null ? sd.fatigue : 25;
-        drv.raceRustPenalty = sd.raceRustPenalty || 0;
-        drv.powerUnitsUsedThisSeason = sd.powerUnitsUsedThisSeason || 0;
-        drv.chassisDamage = sd.chassisDamage || 0;
-        return drv;
-      });
+      team.drivers = saved.drivers.map(reviveDriver);
+      team.injuredSwap = saved.injuredSwap
+        ? { slot: saved.injuredSwap.slot, injuredDriver: reviveDriver(saved.injuredSwap.injuredDriver) }
+        : null;
       team.academy = Array.isArray(saved.academy) ? saved.academy.map(sd=>{
         const prospect = new Driver(sd.name, sd.code, sd.number, sd.stats, sd.age, sd.height, sd.potential);
         prospect.f2Enrolled = sd.f2Enrolled || false;
@@ -3771,6 +4236,15 @@ const Game = {
         return drv;
       }) : [];
     });
+    // 시즌 중 오퍼/성사된 이적: 팀 로스터가 모두 복원된 뒤에야 driverRef를 slot으로 되찾을 수 있다.
+    // 저장 시점 이후 그 슬롯의 드라이버가 다른 경로로 바뀌었다면(극히 드묾) 안전하게 건너뛴다.
+    const reviveOfferRef = o=>{
+      const rivalTeam = this.teams[o.offerTeamIdx];
+      const driverRef = rivalTeam ? rivalTeam.drivers[o.rslot] : null;
+      return driverRef ? { offerTeamIdx:o.offerTeamIdx, driverRef, mySlot:o.mySlot, offeredSalary:o.offeredSalary, offeredYears:o.offeredYears, competitorCount:o.competitorCount||0 } : null;
+    };
+    this.pendingSeasonOffers = Array.isArray(data.pendingSeasonOffers) ? data.pendingSeasonOffers.map(reviveOfferRef).filter(Boolean) : [];
+    this.confirmedTransfers = Array.isArray(data.confirmedTransfers) ? data.confirmedTransfers.map(reviveOfferRef).filter(Boolean) : [];
     this.marketPool = Array.isArray(data.marketPool) ? data.marketPool.map(sd=>{
       const drv = new Driver(sd.name, sd.code, sd.number, sd.stats, sd.age, sd.height);
       drv.morale = sd.morale!=null ? sd.morale : 78;
@@ -3793,6 +4267,17 @@ const Game = {
     return true;
   },
   bindSaveControls(){
+    document.getElementById('managerSetupConfirmBtn').addEventListener('click', ()=>{
+      const nameInput = document.getElementById('managerNameInput');
+      const name = nameInput.value.trim();
+      this.managerName = name || '익명';
+      this.managerNationality = document.getElementById('managerNationalitySelect').value;
+      // 숨겨진 치트 모드: 감독 이름을 정확히 "초보자"로 지으면 활성화된다.
+      if(name === '초보자') this.activateCheatMode();
+      this.updateManagerDisplay();
+      document.getElementById('managerSetupOverlay').classList.remove('show');
+      this.showTeamSelectScreen();
+    });
     // 주의: 브라우저 네이티브 confirm()은 일부 환경에서 반복 호출 시 브라우저가 "이 페이지의 추가 대화상자
     // 차단"을 자동 적용해 아무 반응 없이 조용히 false를 반환할 수 있다("새 커리어 버튼이 안 먹는다" 버그의
     // 원인이 될 수 있음). 이를 피하기 위해 다른 모달들과 동일한 방식의 자체 확인 모달을 사용한다.
@@ -3827,6 +4312,12 @@ const Game = {
     try{ localStorage.removeItem(SAVE_KEY); }catch(e){}
     this.teams = buildTeams();
     this.playerTeamIdx = 0;
+    this.managerName = ''; this.managerNationality = null; this.cheatMode = false; this.managerReputation = 50;
+    this._pendingTeamSwitch = null;
+    this.pendingSeasonOffers = []; this.confirmedTransfers = [];
+    this.peakReputation = 50; this.careerStats = { racesCompleted:0, podiums:0 }; this.careerTeamHistory = [];
+    this.trackRecords = {};
+    this.updateManagerDisplay();
     this.trackKey = 'australia';
     this.season = 1; this.racesThisSeason = 0; this.aiTransfersThisSeason = 0;
     this.mails = []; this.mailUnread = 0;
@@ -3844,7 +4335,7 @@ const Game = {
     this.updateMailBadge();
     this.populateTeamSelect();
     this.seedMails();
-    this.showTeamSelectScreen();
+    this.showManagerSetupScreen();
   },
 
   renderSetupPanel(){
@@ -3926,6 +4417,7 @@ const Game = {
         if(btn.dataset.view==='championship') this.renderChampionship();
         if(btn.dataset.view==='trophy') this.renderTrophyCabinet();
         if(btn.dataset.view==='hof') this.renderHallOfFame();
+        if(btn.dataset.view==='career') this.renderCareerProfile();
         if(btn.dataset.view==='roster') this.renderRosterEditor();
       });
     });
@@ -3936,7 +4428,7 @@ const Game = {
     document.getElementById('startBtn').addEventListener('click', ()=>{
       if(this.engine.running) return;
       this.startEngineSound(); // 오디오는 사용자 제스처(클릭) 안에서 시작해야 브라우저 자동재생 정책을 통과한다
-      // 메인 레이스는 처음 시작할 때만 실제 UGP처럼 5개의 레드라이트 스타팅 시퀀스를 거친다.
+      // 메인 레이스는 처음 시작할 때만 실제 F1처럼 5개의 레드라이트 스타팅 시퀀스를 거친다.
       if(this.engine.sessionKind==='race' && !this.engine._raceStarted){
         this.engine._raceStarted = true;
         document.getElementById('startBtn').disabled = true;
@@ -3963,7 +4455,7 @@ const Game = {
     });
   },
 
-  // 실제 UGP의 5구간 레드라이트 스타팅 시퀀스를 재현: 1개씩 순차 점등 → 무작위 홀드 → 일제 소등(=출발 신호).
+  // 실제 F1의 5구간 레드라이트 스타팅 시퀀스를 재현: 1개씩 순차 점등 → 무작위 홀드 → 일제 소등(=출발 신호).
   // 레드플래그 이후 재출발 때도 동일한 시퀀스를 재사용한다.
   playStartingLights(onComplete){
     const overlay = document.getElementById('startLightsOverlay');
@@ -3978,7 +4470,7 @@ const Game = {
         i++;
         setTimeout(stepOn, 650);
       } else {
-        const holdMs = 300 + Math.random()*1900; // 실제 UGP처럼 소등 타이밍을 무작위화(예측 방지)
+        const holdMs = 300 + Math.random()*1900; // 실제 F1처럼 소등 타이밍을 무작위화(예측 방지)
         setTimeout(()=>{
           overlay.classList.add('lights-out');
           setTimeout(()=>{
@@ -4012,7 +4504,7 @@ const Game = {
         else if(lossSeconds < 0.08) this.queueRadio(car, 'goodStart');
       }
       // 반응이 지나치게 빨라 사실상 라이트 아웃을 예측한 것으로 보이는 경우, 낮은 확률로
-      // 부정출발 의혹에 대한 IMSC 심의가 개시된다.
+      // 부정출발 의혹에 대한 FIA 심의가 개시된다.
       if(lossSeconds < 0.03 && Math.random()<0.2) this.engine.raiseStewardCase(car, 'jump_start');
     });
   },
@@ -4107,6 +4599,13 @@ const Game = {
     const dt = Math.min(0.25, (ts-this.lastTs)/1000) * this.simSpeed;
     this.lastTs = ts;
 
+    this.applyCheatTopUp();
+
+    // [버그 수정] "새 커리어" 시작 시 resetCareer()가 this.engine을 null로 비우는데, 이미 돌고 있던
+    // 이전 애니메이션 루프는 팀을 다시 고를 때까지(finishInit()이 새 engine을 만들 때까지) 계속
+    // 프레임을 요청한다. 그 사이 이 함수가 호출되면 this.engine이 null이라 예외가 발생했다.
+    if(!this.engine){ requestAnimationFrame(this.loop); return; }
+
     const wasFinished = this.engine.finished;
     const prevEventCount = this.engine.overtakeEvents.length;
     this.engine.tick(dt);
@@ -4118,6 +4617,12 @@ const Game = {
         this.engine.overtakeEvents.slice(0, this.engine.overtakeEvents.length-prevEventCount).forEach(ev=>{
           if(ev.winnerIsMine){ this.queueRadio(ev.winnerCar, 'overtakeMade'); this.playChime(); }
           if(ev.loserIsMine) this.queueRadio(ev.loserCar, 'overtakeLost');
+          // 관중 반응: 레이스 중 내 팀 드라이버가 관련된 추월에 그랜드스탠드가 반응한다.
+          // 포디움(1~3위)권 순위 다툼일수록 더 격한 반응으로 연출한다.
+          if(this.engine.sessionKind==='race'){
+            if(ev.winnerIsMine) this.showCrowdReaction(ev.pos<=3 ? '🎉 그랜드스탠드가 열광합니다!' : '👏 관중들의 박수가 터집니다', 'cheer');
+            if(ev.loserIsMine) this.showCrowdReaction(ev.pos<=3 ? '😱 관중석에서 탄식이 터집니다' : '😕 관중들이 아쉬워합니다', 'groan');
+          }
         });
       }
     }
@@ -4346,7 +4851,7 @@ const Game = {
         const comp = COMPOUNDS[car.compound];
         const hasTime = isFinite(car.personalBestLapTime);
         // 3자리 소수점까지 정밀 표기: 1위는 자신의 랩타임 자체, 그 외는 "바로 앞차"와의 INTERVAL(+0.xxx)
-        // (선두와의 누적 GAP이 아니라 실제 UGP 방송처럼 앞차 대비 인터벌을 표기한다)
+        // (선두와의 누적 GAP이 아니라 실제 F1 방송처럼 앞차 대비 인터벌을 표기한다)
         let gapStr;
         if(!hasTime) gapStr = 'NO TIME';
         else if(pos===1) gapStr = formatLapTime(car.personalBestLapTime);
@@ -4379,21 +4884,29 @@ const Game = {
         ? `🏆 FASTEST LAP: <b>${holder.driver.code}</b> — <b>${formatLapTime(this.engine.sessionBestLapTime)}</b>`
         : `🏆 FASTEST LAP: 기록 대기 중...`;
     }
-    list.innerHTML = rows.map(({car,pos,interval})=>{
+    const raceLeaderCar = rows.length ? rows[0].car : null;
+    list.innerHTML = rows.map(({car,pos,gap})=>{
       const isPlayer = (car.team===myTeam); // 내 팀 소속 드라이버 2명 모두 강조 표시
       const comp = COMPOUNDS[car.compound];
-      // 방송 패널은 선두와의 누적 GAP 대신 바로 앞차와의 INTERVAL을 소수점 3자리까지 표기.
-      // [버그 수정] 1위 드라이버 자리에 "레이스 전체 누적 경과 시간"이 표시되던 문제 — 실제 UGP
+      // 방송 패널은 실제 F1처럼 "1위와의 GAP"을 소수점 3자리까지 표기하되, 한 바퀴 이상 뒤처진
+      // 차량은 시간차가 더 이상 의미 없으므로("+37.281s"식 큰 숫자 대신) "+1 LAP"/"+2 LAPS"로 표기한다.
+      // [버그 수정] 1위 드라이버 자리에 "레이스 전체 누적 경과 시간"이 표시되던 문제 — 실제 F1
       // 타이밍 패널처럼 1위는 이번 세션의 최단 랩타임(Best Lap, 없으면 직전 랩타임)을 기준으로 표시한다.
       let p1RefTime = isFinite(car.personalBestLapTime) ? car.personalBestLapTime : car.lastLapTime;
-      let gapStr = pos===1 ? (p1RefTime!=null ? formatLapTime(p1RefTime) : 'NO TIME') : `+${interval.toFixed(3)}s`;
+      let gapStr;
+      if(pos===1){
+        gapStr = p1RefTime!=null ? formatLapTime(p1RefTime) : 'NO TIME';
+      } else {
+        const lapsDown = raceLeaderCar ? Math.max(0, raceLeaderCar.lap - car.lap) : 0;
+        gapStr = lapsDown>=1 ? `+${lapsDown} laps` : `+${gap.toFixed(3)}s`;
+      }
       let statusTag='';
       if(car.status==='dns'){ gapStr='DNS'; statusTag='<span class="status-tag out">DNS</span>'; }
       else if(car.status==='retired'){ gapStr='DNF'; statusTag='<span class="status-tag out">OUT</span>'; }
       else if(car.status==='dsq'){ gapStr='DSQ'; statusTag='<span class="status-tag out">DSQ</span>'; }
       else if(car.inPit) statusTag='<span class="status-tag pit">PIT</span>';
       else if(this.engine.finished) statusTag='<span class="status-tag">FIN</span>';
-      // IMSC 스튜어드 심의 상태를 실제 UGP 방송처럼 드라이버 이름 옆에 실시간 아이콘/마크로 표시
+      // FIA 스튜어드 심의 상태를 실제 F1 방송처럼 드라이버 이름 옆에 실시간 아이콘/마크로 표시
       let stewardTag = '';
       if(car.stewardStatus){
         if(car.stewardStatus.stage==='noted') stewardTag = '<span class="steward-tag noted" title="NOTED">📋</span>';
@@ -4515,11 +5028,62 @@ const Game = {
       aggressive: {type:'aggressive', label:'최소 1대 5위 이내 진입', reward:sub.aggroReward, sponsor:sub.name},
     };
   },
+  // 팬 시스템: 레이스 결과에 따라 내 팀 드라이버 개개인과 팀 전체의 팬 수를 갱신한다. 포디움에
+  // 가까울수록 많이 늘고, 완주하지 못하면(DNF/DNS/DSQ) 소폭 줄어든다. 팀 팬 수는 두 드라이버의
+  // 증감분을 합산해 반영한다(팀 성적 자체에 대한 팬덤 반응).
+  updateFanCounts(finalOrder){
+    const myTeam = this.teams[this.playerTeamIdx];
+    let teamFanDelta = 0;
+    myTeam.drivers.forEach(d=>{
+      const entry = finalOrder.find(f=>f.car.driver===d);
+      let delta;
+      if(!entry) delta = -50;
+      else if(entry.pos===1) delta = 1200;
+      else if(entry.pos===2) delta = 700;
+      else if(entry.pos===3) delta = 450;
+      else if(entry.pos<=10) delta = 150;
+      else delta = 20;
+      d.fanCount = Math.max(100, d.fanCount + delta);
+      teamFanDelta += delta;
+    });
+    myTeam.fanCount = Math.max(1000, myTeam.fanCount + teamFanDelta);
+  },
+  // 서킷별 우리 팀 통산 전적: 방문 횟수는 완주 여부와 무관하게 항상 누적되지만, 최고 성적(bestPos)은
+  // 실제로 완주한 드라이버가 있었을 때(pos!=null)만 갱신한다 — 둘 다 리타이어한 레이스를 "최고 성적"
+  // 으로 잘못 기록하지 않기 위함이다.
+  updateTrackRecord(pos){
+    const key = this.trackKey;
+    if(!this.trackRecords[key]) this.trackRecords[key] = { visits:0, wins:0, podiums:0, bestPos:null, bestSeason:null };
+    const rec = this.trackRecords[key];
+    rec.visits++;
+    if(pos===1) rec.wins++;
+    if(pos!=null && pos<=3) rec.podiums++;
+    if(pos!=null && (rec.bestPos==null || pos<rec.bestPos)){ rec.bestPos = pos; rec.bestSeason = this.season; }
+  },
+  // 포디움(1~3위) 축하 이모티콘 빵빠레 — 화면 위에서 잠시 쏟아졌다가 사라지는 연출(클릭 방해 없음).
+  celebratePodium(){
+    const layer = document.getElementById('confettiLayer');
+    if(!layer) return;
+    const EMOJI = ['🎉','🏆','🎊','🥂','✨','🍾'];
+    for(let i=0;i<50;i++){
+      const span = document.createElement('span');
+      span.className = 'confetti-piece';
+      span.textContent = EMOJI[Math.floor(Math.random()*EMOJI.length)];
+      span.style.left = (Math.random()*100)+'vw';
+      span.style.setProperty('--drift', (Math.random()*160-80)+'px');
+      span.style.setProperty('--rot', (Math.random()*720-360)+'deg');
+      span.style.animationDuration = (2.2+Math.random()*1.6)+'s';
+      span.style.animationDelay = (Math.random()*0.6)+'s';
+      span.style.fontSize = (18+Math.random()*20)+'px';
+      layer.appendChild(span);
+      span.addEventListener('animationend', ()=> span.remove());
+    }
+  },
   onRaceFinished(){
     const standings = this.engine.standings();
     const myTeam = this.teams[this.playerTeamIdx];
 
-    // 경기 후 IMSC 기술 검차(DSQ): 완주 처리된 차량을 대상으로 낮은 확률의 무작위 검차를 진행한다.
+    // 경기 후 FIA 기술 검차(DSQ): 완주 처리된 차량을 대상으로 낮은 확률의 무작위 검차를 진행한다.
     // 하위권 팀일수록 규정 위반(최소 중량 미달/플로어 과다 마모 등) 적발 확률이 약간 더 높다.
     const DSQ_REASONS = ["차량 최소 중량 미달", "플로어(Plank) 과도 마모", "연료 유량 규정 위반", "프론트윙 편향 테스트 불합격"];
     standings.forEach(({car})=>{
@@ -4529,13 +5093,13 @@ const Game = {
         car.status = 'dsq';
         car.dsqReason = DSQ_REASONS[Math.floor(Math.random()*DSQ_REASONS.length)];
         if(this.engine.isMyTeamCar(car)){
-          this.addMail('IMSC', `[검차 실격 — DSQ] ${car.driver.name}`,
+          this.addMail('FIA', `[검차 실격 — DSQ] ${car.driver.name}`,
             `경기 후 기술 검차 결과, ${car.driver.name} 선수의 차량에서 "${car.dsqReason}" 위반이 적발되어 이번 레이스 전체 실격(DSQ) 처리되었습니다.\n이번 레이스에서 획득한 포인트가 전부 몰수됩니다.`, 'breaking');
         }
       }
     });
     // DSQ된 차량은 최종 클래시피케이션에서 완전히 제외하고, 나머지 차량들을 재정렬(순위 승격)하여
-    // 포인트·트로피·팀 성적을 다시 매긴다(실제 UGP처럼 실격자 뒤 순위가 전원 한 계단씩 앞당겨진다).
+    // 포인트·트로피·팀 성적을 다시 매긴다(실제 F1처럼 실격자 뒤 순위가 전원 한 계단씩 앞당겨진다).
     const finalOrder = standings.filter(s=>s.car.status==='finished').map((s,i)=>({car:s.car, pos:i+1}));
 
     // 트로피 진열장: 최종 클래시피케이션(DSQ 반영) 기준 우리 팀 드라이버가 우승했다면 기록에 남긴다.
@@ -4563,14 +5127,17 @@ const Game = {
     // 드라이버 2명 중 더 좋은 순위를 팀 성적으로 인정(보상/보고 기준). 전원 리타이어/DNS/DSQ면 최하위로 처리.
     const myFinalPositions = finalOrder.filter(f=>f.car.team===myTeam).map(f=>f.pos);
     const myPos = myFinalPositions.length ? Math.min(...myFinalPositions) : 20;
-    const rp = Math.max(2, 22-myPos);
+    this.updateFanCounts(finalOrder);
+    if(myPos<=3){ this.celebratePodium(); this.careerStats.podiums++; }
+    this.updateTrackRecord(myFinalPositions.length ? myPos : null);
+    const rp = Math.max(3, 24-myPos);
     // 수석 엔지니어의 기술력이 높을수록, 팀 내 정치/불신도가 낮을수록 레이스당 획득 R&D 포인트가 늘어난다.
     const engBonus = 0.7 + (myTeam.engineer.skill/100)*0.6;
     const politicsFactor = 1 - myTeam.politics/220; // 정치 100 → 약 0.545배로 R&D 효율 저하
     const rpGained = Math.round(rp*engBonus*politicsFactor);
     myTeam.rdPoints += rpGained; myTeam.trainingPoints += 2;
 
-    // 실제 UGP 포인트 시스템: 1~10위 순위별 포인트 + 완주 톱10 중 패스티스트 랩 보너스 1점
+    // 실제 F1 포인트 시스템: 1~10위 순위별 포인트 + 완주 톱10 중 패스티스트 랩 보너스 1점
     // (DSQ된 차량은 finalOrder에서 이미 제외되어 포인트를 받지 못하며, 뒷순위가 자동으로 승격된다)
     const fastestLapCar = this.engine.sessionBestLapHolder;
     finalOrder.forEach(({car,pos})=>{
@@ -4680,9 +5247,9 @@ const Game = {
       // 새 라인업은 다음 세션을 만들 때 자연히 반영된다.
     });
 
-    // PDS 리그 시뮬레이션: 이번 레이스 주말에 맞춰, PDS 시즌에 등록된 유스 유망주들의 이번 라운드
+    // F2 리그 시뮬레이션: 이번 레이스 주말에 맞춰, F2 시즌에 등록된 유스 유망주들의 이번 라운드
     // 결과를 함께 시뮬레이션한다(유스 육성이 단순 포인트 투자가 아닌 실전 경험 축적 방식으로 진행).
-    (myTeam.academy||[]).forEach(prospect=>{ if(prospect.f2Enrolled) simulatePDSRound(prospect); });
+    (myTeam.academy||[]).forEach(prospect=>{ if(prospect.f2Enrolled) simulateF2Round(prospect); });
 
     // 팀 내 정치/불신도 갱신: 두 드라이버 간 사기 격차가 크거나 팀 전체 사기가 낮으면 갈등이 쌓이고,
     // 좋은 성적과 높은 평균 사기는 서서히 갈등을 진정시킨다.
@@ -4707,13 +5274,13 @@ const Game = {
       return `${s.car.driver.name} — ${label}`;
     }).join(', ');
     this.addMail("피트 크루", `[레이스 결과 보고] ${this.engine.track.name}`,
-      `수고하셨습니다, 감독님.\n\n금번 ${this.engine.track.name} 레이스 우리 팀 드라이버 결과: ${myResultLine}\n` +
+      `수고하셨습니다, ${this.managerName||'감독'}님.\n\n금번 ${this.engine.track.name} 레이스 우리 팀 드라이버 결과: ${myResultLine}\n` +
       `이번 레이스로 R&D 포인트 ${rpGained}RP(수석 엔지니어 ${myTeam.engineer.name} 보너스 반영), 성적 상금 ${Math.max(1,15-myPos)}M$가 지급되고, 운영비 ${operatingCost}M$가 차감되었습니다.\n` +
       `(잔여 예산: ${myTeam.budget.toFixed(0)}M$)\n\n` +
       `상위 10명 최종 클래시피케이션:\n` + finalOrder.slice(0,10).map(f=>`${f.pos}. ${f.car.driver.name} (${f.car.team.name}) — ${pointsForPosition(f.pos)+(f.car===fastestLapCar&&f.pos<=10?1:0)}pt`).join('\n')
     );
 
-    // 패독 루머 메일 (약 55% 확률, 실제 UGP 저널리스트 인용)
+    // 패독 루머 메일 (약 55% 확률, 실제 F1 저널리스트 인용)
     if(Math.random()<0.55) this.generateRumorMail();
     // 라이벌 팀 감독/기자의 신경전 도발 메일 (약 35% 확률)
     if(Math.random()<0.35) this.generateRivalTauntMail();
@@ -4735,7 +5302,10 @@ const Game = {
 
     // 시즌/AI 이적 시스템: 1시즌(=서킷 5개 순환) 당 AI 이적은 최대 2회로 제한
     this.racesThisSeason++;
+    this.careerStats.racesCompleted++;
     if(this.aiTransfersThisSeason<2 && Math.random()<0.4){ this.doAiTransfer(); }
+    // 시즌 중 타 팀 드라이버 오퍼: 대기 중인 오퍼가 있다면 이번 레이스 종료를 기점으로 성사 여부를 정한다.
+    this.resolveSeasonOffers();
     if(this.racesThisSeason>=RACES_PER_SEASON){
       this.startOffseason();
     } else {
@@ -4760,8 +5330,8 @@ const Game = {
       team.drivers.forEach(d=>{ d.champPoints = 0; d.enginePUWear = 100; d.pendingGridPenalty = 0; }); // 새 규정 = 완전히 새로운 파워유닛
     });
     this.renderRD(); this.renderVehicleTab(); this.renderTransfer();
-    this.addMail("IMSC", `${this.season}번째 시즌 개막 — 신규 기술 규정 발효`,
-      `새로운 시즌이 시작되었습니다! IMSC의 기술 규정 변경으로 모든 팀의 차량 기본 성능이 재산정되어, 지난 시즌과는 전혀 다른 판도가 펼쳐질 수 있습니다.\n` +
+    this.addMail("FIA", `${this.season}번째 시즌 개막 — 신규 기술 규정 발효`,
+      `새로운 시즌이 시작되었습니다! FIA의 기술 규정 변경으로 모든 팀의 차량 기본 성능이 재산정되어, 지난 시즌과는 전혀 다른 판도가 펼쳐질 수 있습니다.\n` +
       `드라이버 챔피언십 포인트가 초기화되었고, R&D는 다시 Lv.1부터 시작합니다.`);
     this.addMail("재무팀", "[예산 이월 규정] 시즌 종료 정산",
       `시즌 종료에 따라 재무 규정상 보유 예산의 30%만 차기 시즌으로 이월됩니다.\n이월 예산: ${carriedOver}M$ (차감된 금액: ${forfeited}M$)`);
@@ -4774,12 +5344,13 @@ const Game = {
   startOffseason(){
     this.recordSeasonTrophies();
     this.checkSeasonGoal();
+    this.rollManagerJobOffer();
     this.processAgingAndRetirement();
-    // PDS 시즌 마감: 참가 중이던 유망주들의 최종 성적을 메일로 요약하고, 다음 시즌을 위해 등록 상태를 초기화한다.
+    // F2 시즌 마감: 참가 중이던 유망주들의 최종 성적을 메일로 요약하고, 다음 시즌을 위해 등록 상태를 초기화한다.
     const myTeam = this.teams[this.playerTeamIdx];
     (myTeam.academy||[]).forEach(d=>{
       if(d.f2Enrolled){
-        this.addMail('아카데미', `[PDS 시즌 종료] ${d.name}`, `${d.name} 선수가 이번 시즌 PDS 챔피언십에서 총 ${d.f2Points||0}점을 획득하며 시즌을 마쳤습니다.`);
+        this.addMail('아카데미', `[F2 시즌 종료] ${d.name}`, `${d.name} 선수가 이번 시즌 F2 챔피언십에서 총 ${d.f2Points||0}점을 획득하며 시즌을 마쳤습니다.`);
       }
       d.f2Enrolled = false; d.f2Investment = 0; d.f2Points = 0;
     });
@@ -4802,6 +5373,8 @@ const Game = {
       });
     });
     this.offseasonDay = 1;
+    this._offseasonThreatCount = 0;
+    myTeam.drivers.forEach(d=> d.poachThreat = null);
     this.showOffseasonScreen();
   },
   // 드라이버 에이징 커브 & 은퇴 시스템 — 시즌 종료마다 전 팀의 모든 드라이버 나이를 1살 올리고,
@@ -4877,11 +5450,79 @@ const Game = {
       myTeam.boardTrust = Math.min(100, myTeam.boardTrust+5);
     }
     this.checkBoardTrustGameOver();
+    // 감독 평판(managerReputation, 0~100): 이사회 신뢰도(팀 내부 평가)와 별개로 "업계 전체에서
+    // 이 감독이 얼마나 유명한가"를 나타낸다 — 최종 컨스트럭터 순위가 좋을수록 오른다. 오프시즌에
+    // 타 팀 스카우트 제의가 오는지(rollManagerJobOffer)를 결정하는 기준이 된다.
+    const repDelta = myRank<=3 ? 15 : myRank<=6 ? 5 : myRank<=9 ? -5 : -10;
+    this.managerReputation = Math.max(0, Math.min(100, (this.managerReputation??50) + repDelta));
+    this.peakReputation = Math.max(this.peakReputation||50, this.managerReputation);
     // 다음 시즌 목표/ATR 핸디캡 재배정 — 이번 시즌 최종 순위 기준
     this.teams.forEach(t=>{
       const rank = teamsSorted.indexOf(t)+1;
       assignSeasonGoal(t, rank, this.teams.length);
     });
+  },
+  // 타 팀 구단주의 감독 스카우트 제의: 평판이 일정 수준(55) 이상일 때만, 평판이 높을수록 자주(그리고
+  // 상위 등급 팀 위주로) 걸린다. 첫 시즌은 아직 실적이 없으니 제외한다.
+  rollManagerJobOffer(){
+    if(this.season<=1) return;
+    if(this.managerReputation<55) return;
+    if(this.mails.some(m=>m.kind==='managerOffer' && !m.resolved)) return;
+    const chance = Math.min(0.6, (this.managerReputation-55)/60);
+    if(Math.random() > chance) return;
+    const myTeam = this.teams[this.playerTeamIdx];
+    const rivalTeams = this.teams.filter(t=>t!==myTeam);
+    if(!rivalTeams.length) return;
+    const tierWeight = {S:3, A:2, B:1};
+    const repBias = this.managerReputation>=80 ? 2 : this.managerReputation>=65 ? 1 : 0;
+    const weights = rivalTeams.map(t=> Math.max(0.2, tierWeight[t.tier] + (t.tier==='S'?repBias:0)));
+    const total = weights.reduce((a,b)=>a+b,0);
+    let r = Math.random()*total, offerTeam=null;
+    for(let i=0;i<rivalTeams.length;i++){ r-=weights[i]; if(r<=0){ offerTeam=rivalTeams[i]; break; } }
+    offerTeam = offerTeam || rivalTeams[0];
+    this.addMail(`${offerTeam.name} 구단주`, `📨 [스카우트 제의] ${offerTeam.name}`,
+      `${offerTeam.name} 구단주가 ${this.managerName||'감독'}님의 그간 성과를 눈여겨보고 있었다며, 다음 시즌 ${offerTeam.name}의 팀 감독직을 제안했습니다.\n수락하면 다음 시즌부터 ${offerTeam.name}을(를) 새로 이끌게 되며, ${myTeam.name}과의 인연은 여기서 끝납니다.`,
+      'breaking', [
+        {key:'accept', label:`A. 수락 — ${offerTeam.name}으로 이적`, desc:'다음 시즌부터 새 팀을 맡습니다. 지금 팀의 드라이버·역사는 뒤로하게 됩니다.'},
+        {key:'decline', label:`B. 거절 — ${myTeam.name}에 잔류`, desc:'지금 팀과 계속 함께합니다.'},
+      ]);
+    this.mails[0].kind = 'managerOffer';
+    this.mails[0].offerTeamIdx = this.teams.indexOf(offerTeam);
+  },
+  resolveManagerJobOffer(mailIndex, choiceKey){
+    const m = this.mails[mailIndex];
+    if(!m || m.resolved) return;
+    m.resolved = true;
+    if(choiceKey==='accept'){
+      // [버그 수정] 이 메일은 오프시즌 중에는 오프시즌 오버레이에 가려 읽을 수 없어서, 실제로는
+      // 새 시즌이 시작된 뒤(즉 이미 레이스 주간이 진행 중일 수 있는 시점)에야 열람/응답하게 된다.
+      // 그 시점에 playerTeamIdx를 즉시 바꿔버리면, 이미 만들어진 이번 세션의 RaceEngine은 옛 팀
+      // 기준으로 구성되어 있어 "내 팀" 판정이 완전히 어긋난다(레이스 결과가 엉뚱한 팀에 귀속되는 등).
+      // 그래서 즉시 전환하지 않고, 다음 레이스 주말이 새로 시작되는 안전한 시점(FP1)까지 미룬다.
+      this._pendingTeamSwitch = m.offerTeamIdx;
+      const newTeamName = this.teams[m.offerTeamIdx].name;
+      m.body += `\n\n— 결정 —\n제의를 수락했습니다. 이번 레이스 주말이 끝나는 대로 ${newTeamName}의 신임 감독으로 부임합니다.`;
+    } else {
+      m.body += `\n\n— 결정 —\n제의를 정중히 거절하고 현재 팀에 남기로 했습니다.`;
+    }
+    this.renderMailList();
+    this.renderMailReader(mailIndex);
+    this.saveGame();
+  },
+  // 위 resolveManagerJobOffer(accept)에서 예약해 둔 팀 전환을 실제로 적용한다. 매 레이스 주말이 새로
+  // 시작되는 FP1 시점(다른 드라이버 로스터 정비들과 같은 타이밍)에 호출해야 안전하다.
+  applyPendingTeamSwitch(){
+    if(this._pendingTeamSwitch==null) return;
+    const oldTeamName = this.teams[this.playerTeamIdx].name;
+    this.playerTeamIdx = this._pendingTeamSwitch;
+    this._pendingTeamSwitch = null;
+    const newTeam = this.teams[this.playerTeamIdx];
+    this.careerTeamHistory.push({ season:this.season, teamName: newTeam.name });
+    document.getElementById('teamSelect').value = this.playerTeamIdx;
+    this.populateTeamSelect();
+    this.addMail('이사회', `[감독 부임] ${newTeam.name}`,
+      `${this.managerName||'신임 감독'}님이 ${oldTeamName}을(를) 떠나 ${newTeam.name}의 새 팀 감독으로 부임했습니다. 잘 부탁드립니다.`, 'breaking');
+    this.renderRD(); this.renderTransfer(); this.renderTraining(); this.initRadarChart(); this.renderVehicleTab();
   },
   // 이사회 신뢰도가 0%에 도달하면 감독직에서 해임되어 게임 오버 화면으로 전환된다.
   checkBoardTrustGameOver(){
@@ -4891,6 +5532,8 @@ const Game = {
   showFiredScreen(){
     if(this.engine) this.engine.running = false;
     this.stopEngineSound();
+    document.getElementById('firedMessage').textContent =
+      `이사회 신뢰도가 바닥나며, ${this.managerName||'당신'} 감독은 팀 감독직에서 전격 해임되었습니다.`;
     document.getElementById('firedOverlay').classList.add('show');
   },
 
@@ -5182,7 +5825,7 @@ const Game = {
     this.addMail('팀 매니지먼트', `[주간 딜레마] ${dl.title}`, opt.resultText);
     this.renderWeeklyDashboardBody(); this.renderRD(); this.saveGame();
   },
-  // 시즌이 끝나는 시점(챔피언십 포인트가 초기화되기 전)의 순위를 확인해 우리 팀이 GPDC/GPCC를
+  // 시즌이 끝나는 시점(챔피언십 포인트가 초기화되기 전)의 순위를 확인해 우리 팀이 WDC/WCC를
   // 우승했다면 트로피 진열장에 기록하고 축하 메일을 보낸다.
   recordSeasonTrophies(){
     const myTeam = this.teams[this.playerTeamIdx];
@@ -5192,15 +5835,15 @@ const Game = {
     const wdcWinner = allDrivers[0];
     if(wdcWinner && wdcWinner.team===myTeam){
       this.trophies.wdc.push({season:this.season, driver:wdcWinner.d.name});
-      this.addMail('IMSC', '🏆 드라이버 챔피언십 우승!', `축하합니다! ${wdcWinner.d.name} 선수가 ${this.season}시즌 드라이버 챔피언십(GPDC)에서 우승했습니다!`, 'breaking');
-      this.addHallOfFameEntry('👑', `${this.season}시즌 드라이버 챔피언십(GPDC) 우승`, `${wdcWinner.d.name} 선수`);
+      this.addMail('FIA', '🏆 드라이버 챔피언십 우승!', `축하합니다! ${wdcWinner.d.name} 선수가 ${this.season}시즌 드라이버 챔피언십(WDC)에서 우승했습니다!`, 'breaking');
+      this.addHallOfFameEntry('👑', `${this.season}시즌 드라이버 챔피언십(WDC) 우승`, `${wdcWinner.d.name} 선수`);
     }
     const teamsSorted = [...this.teams].sort((a,b)=>
       b.drivers.reduce((s,d)=>s+d.champPoints,0) - a.drivers.reduce((s,d)=>s+d.champPoints,0));
     if(teamsSorted[0]===myTeam){
       this.trophies.wcc.push({season:this.season});
-      this.addMail('IMSC', '🏆 컨스트럭터 챔피언십 우승!', `축하합니다! ${myTeam.name}이(가) ${this.season}시즌 컨스트럭터 챔피언십(GPCC)에서 우승했습니다!`, 'breaking');
-      this.addHallOfFameEntry('🏁', `${this.season}시즌 컨스트럭터 챔피언십(GPCC) 우승`, `${myTeam.name}`);
+      this.addMail('FIA', '🏆 컨스트럭터 챔피언십 우승!', `축하합니다! ${myTeam.name}이(가) ${this.season}시즌 컨스트럭터 챔피언십(WCC)에서 우승했습니다!`, 'breaking');
+      this.addHallOfFameEntry('🏁', `${this.season}시즌 컨스트럭터 챔피언십(WCC) 우승`, `${myTeam.name}`);
     }
   },
   showOffseasonScreen(){
@@ -5224,16 +5867,21 @@ const Game = {
     const rows = team.drivers.map((d,slot)=>{
       const expiring = d.contractYears<=0;
       const salary = calcSalary(d);
-      return `<div class="contract-row">
+      const threat = d.poachThreat ? this.teams[d.poachThreat.teamIdx] : null;
+      const retainSalary = Math.round(calcSalary(d)*1.5*10)/10;
+      return `<div class="contract-row${threat?' threatened':''}">
         <div><div class="cname">${d.name} (#${d.number})
           <select class="role-select" data-role-slot="${slot}" style="font-size:10px; margin-left:6px; background:var(--bg-3); color:var(--text-0); border:1px solid var(--line); border-radius:3px;">
             <option value="first" ${d.role==='first'?'selected':''}>1번 드라이버 (First)</option>
             <option value="second" ${d.role==='second'?'selected':''}>2번 드라이버 (Second)</option>
           </select>
         </div>
-        <div class="csub">OVR ${d.overall()} · 계약 연봉 ${d.contractSalary||salary}M$ · 잔여 계약 ${expiring?'<span class="expiring">만료 — 방치 시 이탈 위험</span>':d.contractYears+'년'}</div></div>
+        <div class="csub">OVR ${d.overall()} · 계약 연봉 ${d.contractSalary||salary}M$ · 잔여 계약 ${expiring?'<span class="expiring">만료 — 방치 시 이탈 위험</span>':d.contractYears+'년'}</div>
+        ${threat ? `<div class="threat-warn">🚨 ${threat.name}이(가) 이 선수에게 이적을 제안했습니다 — 오프시즌이 끝나기 전에 붙잡지 않으면 떠날 수 있습니다.</div>` : ''}
+        </div>
         <div class="cactions">
           ${expiring ? `<button class="resign" data-resign="${slot}">재계약 (2년 · ${salary}M$)</button>` : ''}
+          ${threat ? `<button class="retain-threat" data-retain-threat="${slot}">🚨 긴급 재계약 (3년 · ${retainSalary}M$)</button>` : ''}
         </div>
       </div>`;
     }).join('');
@@ -5277,20 +5925,25 @@ const Game = {
 
     // 타 팀과의 드라이버 트레이드: 상대 드라이버의 실력이 내가 내주는 드라이버보다 훨씬 뛰어나면
     // 성사 확률이 급격히 낮아진다(하위 드라이버로 상위 드라이버를 낚으려는 시도는 대부분 거절).
+    // [간소화] 예전에는 "트레이드 제안"과 "직접 영입 제안"을 각각 팀당 2명씩(총 40행) 전부 펼쳐
+    // 보여줘서 한눈에 보기 너무 복잡했다 — 이제 팀별로 접어둔 목록(펼치기 전까지는 팀명만 보임)에
+    // 드라이버 이름 한 줄 + "협상" 버튼만 두고, 실제 제안(트레이드/직접 영입)은 그 드라이버를 눌렀을 때
+    // 뜨는 별도의 작은 협상 팝업 안에서 한 명씩 집중해서 처리하도록 바꿨다.
     const otherTeams = this.teams.filter(t=>t!==team);
-    const tradeRows = otherTeams.map(t=>{
+    const rivalDriverList = otherTeams.map(t=>{
       const ti = this.teams.indexOf(t);
-      return t.drivers.map((rd,rslot)=>`
-        <div class="contract-row">
-          <div><div class="cname">${rd.name} <span style="color:var(--text-2); font-size:10px;">(${t.name})</span></div>
-          <div class="csub">OVR ${rd.overall()} · 계약 연봉 ${rd.contractSalary||calcSalary(rd)}M$</div></div>
-          <div class="cactions">
-            <select data-offer-for="${ti}:${rslot}">
-              ${team.drivers.map((td,si)=>`<option value="${si}">${td.name} 제안</option>`).join('')}
-            </select>
-            <button data-trade-propose="${ti}:${rslot}">트레이드 제안</button>
+      const driverRows = t.drivers.map((rd,rslot)=>`
+        <div class="rival-driver-row">
+          <div class="rdr-info">
+            <span class="rdr-name">${rd.name}${rd.role==='first'?' <span class="rdr-ace">에이스</span>':''}</span>
+            <span class="rdr-sub">OVR ${rd.overall()} · 잔여 계약 ${rd.contractYears}년</span>
           </div>
+          <button data-negotiate="${ti}:${rslot}">협상</button>
         </div>`).join('');
+      return `<details class="rival-team-group">
+        <summary><span class="rtg-dot" style="background:${t.color}"></span>${t.name} <span class="rtg-tier">${t.tier}등급</span></summary>
+        ${driverRows}
+      </details>`;
     }).join('');
 
     const isLastDay = this.offseasonDay >= 7;
@@ -5304,9 +5957,9 @@ const Game = {
       ${rows}
       <h4 style="margin:16px 0 8px;">드라이버 자유계약 시장</h4>
       ${marketRows}
-      <h4 style="margin:16px 0 8px;">타 팀과 드라이버 트레이드 제안</h4>
-      <p style="color:var(--text-2); font-size:11px; margin:-4px 0 8px;">상대보다 훨씬 부족한 드라이버로 상위 드라이버를 요구하면 대부분 거절됩니다.</p>
-      ${tradeRows}
+      <h4 style="margin:16px 0 8px;">타 팀 드라이버 영입 / 트레이드</h4>
+      <p style="color:var(--text-2); font-size:11px; margin:-4px 0 8px;">팀을 펼친 뒤 원하는 드라이버의 "협상" 버튼을 누르면 트레이드 제안과 직접 영입 제안을 한 곳에서 진행할 수 있습니다.</p>
+      ${rivalDriverList}
       <h4 style="margin:16px 0 8px;">스태프 계약 현황 (엔지니어 · 피트 크루)</h4>
       ${staffRows}
       <h4 style="margin:16px 0 8px;">스태프 시장</h4>
@@ -5322,28 +5975,12 @@ const Game = {
         this.renderOffseasonBody(); this.saveGame();
       });
     });
-    document.querySelectorAll('#offseasonModalBody button[data-trade-propose]').forEach(btn=>{
+    // 압축된 팀별 목록의 "협상" 버튼 — 클릭하면 그 드라이버 한 명에 집중한 작은 협상 팝업을 띄운다
+    // (트레이드 제안/직접 영입 제안 둘 다 그 팝업 안에서 처리된다).
+    document.querySelectorAll('#offseasonModalBody button[data-negotiate]').forEach(btn=>{
       btn.addEventListener('click', ()=>{
-        const [teamIdxStr, rslotStr] = btn.dataset.tradePropose.split(':');
-        const rivalTeam = this.teams[parseInt(teamIdxStr)];
-        const requestedDriver = rivalTeam.drivers[parseInt(rslotStr)];
-        const selEl = document.querySelector(`select[data-offer-for="${teamIdxStr}:${rslotStr}"]`);
-        const mySlot = parseInt(selEl.value);
-        const offeredDriver = team.drivers[mySlot];
-        const chance = tradeSuccessChance(offeredDriver, requestedDriver);
-        if(Math.random() > chance){
-          this.addMail('이적 시장', `[트레이드 거절] ${rivalTeam.name}`,
-            `${rivalTeam.name}이(가) ${offeredDriver.name} ↔ ${requestedDriver.name} 트레이드 제안을 거절했습니다.\n"우리 선수의 가치에 비해 제안이 부족하다"는 입장입니다.`);
-          this.renderOffseasonBody();
-          return;
-        }
-        team.drivers[mySlot] = requestedDriver;
-        rivalTeam.drivers[parseInt(rslotStr)] = offeredDriver;
-        requestedDriver.role = offeredDriver.role; requestedDriver.contractYears = 2; requestedDriver.contractSalary = calcSalary(requestedDriver);
-        offeredDriver.role = 'second'; offeredDriver.contractYears = 2; offeredDriver.contractSalary = calcSalary(offeredDriver);
-        this.addMail('이사회', `[트레이드 성사] ${requestedDriver.name}`,
-          `${rivalTeam.name}과(와)의 트레이드가 성사되어 ${requestedDriver.name} 선수를 영입하고, ${offeredDriver.name} 선수를 내주었습니다.`, 'breaking');
-        this.renderOffseasonBody(); this.renderTransfer(); this.saveGame();
+        const [ti, rslot] = btn.dataset.negotiate.split(':').map(Number);
+        this.openRivalNegotiation(ti, rslot);
       });
     });
     document.querySelectorAll('#offseasonModalBody button[data-resign]').forEach(btn=>{
@@ -5355,6 +5992,23 @@ const Game = {
         team.budget -= salary;
         d.contractYears = 2; d.contractSalary = salary;
         this.addMail('이사회', `[재계약 완료] ${d.name}`, `${d.name} 선수와 2년 재계약(연봉 ${salary}M$)을 체결했습니다. 잔여 예산: ${team.budget.toFixed(0)}M$`);
+        this.renderOffseasonBody();
+        this.saveGame();
+      });
+    });
+    // 타 팀의 역제안 위협을 받은 드라이버를 프리미엄 조건으로 즉시 붙잡는다(정상 재계약보다 비싸지만 확실).
+    document.querySelectorAll('#offseasonModalBody button[data-retain-threat]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const slot = parseInt(btn.dataset.retainThreat);
+        const d = team.drivers[slot];
+        if(!d.poachThreat) return;
+        const retainSalary = Math.round(calcSalary(d)*1.5*10)/10;
+        if(team.budget < retainSalary){ alert('예산이 부족합니다. (필요 연봉 '+retainSalary+'M$)'); return; }
+        team.budget -= retainSalary;
+        d.contractYears = 3; d.contractSalary = retainSalary;
+        d.morale = Math.min(100, d.morale+10);
+        d.poachThreat = null;
+        this.addMail('이사회', `[긴급 재계약 완료] ${d.name}`, `${d.name} 선수와 파격적인 조건(3년 · ${retainSalary}M$)으로 긴급 재계약해 이적을 막았습니다. 선수의 팀 만족도가 상승했습니다. 잔여 예산: ${team.budget.toFixed(0)}M$`, 'breaking');
         this.renderOffseasonBody();
         this.saveGame();
       });
@@ -5425,9 +6079,12 @@ const Game = {
         this.renderOffseasonBody();
         this.saveGame();
       } else {
+        this.resolvePoachThreats();
         this.resolveOffseasonRisk();
         this.resolveStaffOffseasonRisk();
         this.applyRegulationChange();
+        // 시즌 중 성사된 오퍼(confirmedTransfers)를 새 시즌이 시작되는 지금 실제 로스터에 반영한다.
+        this.applyConfirmedTransfers();
         document.getElementById('offseasonOverlay').classList.remove('show');
         this.renderTransfer(); this.renderTraining(); this.saveGame();
       }
@@ -5451,6 +6108,36 @@ const Game = {
       this.addMail('스카우트 팀', `[Day ${this.offseasonDay}] 시장 동향`,
         '이적시장과 스태프 시장에 새로운 매물이 등장했을 수 있습니다. 확인해보세요.');
     }
+    this.rollPoachThreatEvent();
+  },
+  // 타 팀의 역(逆)영입 시도: 위의 "이적 루머"는 단순 소문이지만, 이 이벤트는 실제로 계약이 남은 내
+  // 드라이버 한 명에게 구체적인 위협(poachThreat)을 걸어 오프시즌 종료 전에 긴급 재계약을 유도한다.
+  // 한 오프시즌에 한 번만 발생시켜(그리고 이미 위협받는 드라이버가 있으면 새로 걸지 않음) 임팩트를 유지한다.
+  rollPoachThreatEvent(){
+    const team = this.teams[this.playerTeamIdx];
+    if((this._offseasonThreatCount||0) >= 1) return;
+    if(team.drivers.some(d=>d.poachThreat)) return;
+    if(Math.random() > 0.35) return;
+    const candidates = team.drivers.filter(d=> d.contractYears>0);
+    if(!candidates.length) return;
+    // 만족도가 낮고 실력이 좋은 드라이버일수록 표적이 되기 쉽다.
+    const weights = candidates.map(d=> Math.max(1, (100-d.morale)/2 + (d.overall()-60)));
+    const totalW = weights.reduce((a,b)=>a+b,0);
+    let r = Math.random()*totalW, target=null;
+    for(let i=0;i<candidates.length;i++){ r -= weights[i]; if(r<=0){ target=candidates[i]; break; } }
+    target = target || candidates[0];
+    // 상위 등급 팀일수록 역제안을 걸어올 확률이 높다.
+    const rivalPool = this.teams.filter(t=>t!==team);
+    const tierWeight = {S:3, A:2, B:1};
+    const rw = rivalPool.map(t=> tierWeight[t.tier]);
+    const rTotal = rw.reduce((a,b)=>a+b,0);
+    let rr = Math.random()*rTotal, rival=null;
+    for(let i=0;i<rivalPool.length;i++){ rr -= rw[i]; if(rr<=0){ rival=rivalPool[i]; break; } }
+    rival = rival || rivalPool[0];
+    target.poachThreat = { teamIdx: this.teams.indexOf(rival) };
+    this._offseasonThreatCount = (this._offseasonThreatCount||0) + 1;
+    this.addMail('이사회', `🚨 [영입 시도 포착] ${target.name}`,
+      `${rival.name}이(가) ${target.name} 선수에게 정식으로 이적을 제안했다는 정보가 입수되었습니다.\n오프시즌이 끝나기 전에 긴급 재계약으로 붙잡지 않으면 시즌 시작 전에 팀을 떠날 수 있습니다.`, 'breaking');
   },
   // 스태프(엔지니어/피트 크루)도 드라이버와 동일하게, 오프시즌 종료 시점까지 재계약하지 않으면
   // 기술력·조건에 비례한 확률로 타 팀에 스카우트되어 떠난다. 공석은 즉시 신규 채용으로 메운다.
@@ -5471,6 +6158,62 @@ const Game = {
           `공석이 된 자리에 신규 ${role==='engineer'?'엔지니어':'피트 크루 치프'} ${replacement.name}을(를) 긴급 채용했습니다.`);
       } else {
         s.contractYears = 1; s.contractSalary = calcStaffSalary(s.skill);
+      }
+    });
+  },
+  // 오프시즌 종료 시점까지 해소되지 않은 타 팀의 역제안 위협(poachThreat)을 정산한다. 긴급 재계약으로
+  // 이미 해소됐다면 poachThreat가 null이라 아무 일도 없고, 방치된 경우에만 실제 이적 여부를 굴린다.
+  // 기존 poachAcceptChance(제안 팀, 현재 팀, 드라이버, 제시 연봉, 계약 기간) 공식을 그대로 재사용해
+  // "상대 팀이 내 드라이버에게 제안"하는 상황을 만든다.
+  resolvePoachThreats(){
+    const team = this.teams[this.playerTeamIdx];
+    team.drivers.slice().forEach((d,slot)=>{
+      if(!d.poachThreat) return;
+      const rivalTeam = this.teams[d.poachThreat.teamIdx];
+      d.poachThreat = null;
+      if(!rivalTeam) return;
+      const offeredSalary = Math.round(calcSalary(d)*1.2*10)/10;
+      const chance = poachAcceptChance(rivalTeam, team, d, offeredSalary, 3);
+      if(Math.random() < chance){
+        const j = randomJournalist();
+        this.addMail(`${j} 기자 (속보)`, `[영입 성사 — 이탈] ${d.name}`,
+          `[${j} 기자] ${d.name} 선수가 결국 ${rivalTeam.name}의 제안을 받아들여 ${team.name}을(를) 떠났습니다.`, 'breaking');
+        // 상대 팀에서는 둘 중 실력이 낮은 드라이버를 리저브로 내리고 그 자리를 내준다.
+        let bumpSlot = 0;
+        if(rivalTeam.drivers.length>1 && rivalTeam.drivers[1].overall() < rivalTeam.drivers[0].overall()) bumpSlot = 1;
+        const bumped = rivalTeam.drivers[bumpSlot];
+        const otherOverall = rivalTeam.drivers[1-bumpSlot] ? rivalTeam.drivers[1-bumpSlot].overall() : 0;
+        d.role = d.overall() >= otherOverall ? 'first' : 'second';
+        d.contractYears = 3; d.contractSalary = offeredSalary;
+        rivalTeam.drivers[bumpSlot] = d;
+        if(bumped){
+          if(!rivalTeam.reserves) rivalTeam.reserves = [];
+          rivalTeam.reserves.push(bumped);
+        }
+        // 내 팀의 공석은 리저브 승격 또는 자유계약 시장 긴급 영입으로 채운다.
+        let replacement = null;
+        if(team.reserves && team.reserves.length){
+          replacement = team.reserves.shift();
+          replacement.role = d.role==='first'?'second':'first';
+          replacement.contractYears = 2; replacement.contractSalary = calcSalary(replacement);
+          team.drivers[slot] = replacement;
+        } else {
+          if(!this.marketPool) this.marketPool = [];
+          const emergency = this.marketPool.find(x=>x!==d);
+          if(emergency){
+            const idx = this.marketPool.indexOf(emergency);
+            this.marketPool.splice(idx,1);
+            emergency.role = d.role==='first'?'second':'first';
+            emergency.contractYears = 1; emergency.contractSalary = calcSalary(emergency);
+            team.drivers[slot] = emergency;
+            replacement = emergency;
+          }
+        }
+        const repText = replacement ? `공석은 ${replacement.name} 선수로 채워졌습니다.` : `아직 마땅한 대체 자원을 찾지 못했습니다 — 이적시장에서 직접 영입해주세요.`;
+        this.addMail('이사회', `[긴급 상황] ${team.name} 시트 공백`, `${d.name} 선수의 이탈로 시트가 비었습니다.\n${repText}`);
+      } else {
+        this.addMail('이사회', `[잔류 확정] ${d.name}`, `${d.name} 선수가 ${rivalTeam.name}의 제안을 거절하고 ${team.name}에 잔류하기로 했습니다.`);
+        d.morale = Math.min(100, d.morale+5);
       }
     });
   },
@@ -5512,6 +6255,30 @@ const Game = {
   },
 
   // 레이스 종료 직후 내 팀 드라이버들의 성적별 인터뷰 코멘트를 팝업으로 보여준다
+  // 방금 끝난 레이스에서 실제로 2회 이상 순위를 주고받은(=진짜 배틀이 벌어진) 라이벌 쌍 중 가장
+  // 치열했던 한 쌍을 골라, 최종 순위를 기준으로 승자/패자와 통산 맞대결 횟수를 정리해 돌려준다.
+  findRaceRivalryHighlight(standings){
+    if(!this.engine || !this.engine.raceHeadToHead) return null;
+    const pairs = Object.entries(this.engine.raceHeadToHead).filter(([,c])=>c>=2);
+    if(!pairs.length) return null;
+    pairs.sort((a,b)=> b[1]-a[1]);
+    const [pairKey, count] = pairs[0];
+    const [nameA, nameB] = pairKey.split('|');
+    const posByName = new Map(standings.map(s=>[s.car.driver.name, s.pos]));
+    const posA = posByName.get(nameA), posB = posByName.get(nameB);
+    if(posA==null || posB==null) return null;
+    const winnerName = posA<posB ? nameA : nameB;
+    const loserName = posA<posB ? nameB : nameA;
+    const findDriver = name=>{ for(const t of this.teams){ const d = t.drivers.find(x=>x.name===name); if(d) return d; } return null; };
+    const winnerDriver = findDriver(winnerName), loserDriver = findDriver(loserName);
+    const myTeam = this.teams[this.playerTeamIdx];
+    return {
+      winnerName, loserName, count,
+      winnerIsMine: (winnerDriver && myTeam.drivers.includes(winnerDriver)) ? winnerDriver : null,
+      loserIsMine: (loserDriver && myTeam.drivers.includes(loserDriver)) ? loserDriver : null,
+      careerTotal: winnerDriver ? (winnerDriver.rivalryTotals[loserName]||count) : count,
+    };
+  },
   showPostRaceInterview(standings, onDone){
     const myTeam = this.teams[this.playerTeamIdx];
     const myRows = standings.filter(s=>s.car.team===myTeam);
@@ -5532,12 +6299,26 @@ const Game = {
         <div class="interview-quote">"${quote}"</div>
       </div>`;
     }).join('');
-    // 라이벌리 뉴스 속보: 약 45% 확률로 그리드의 두 드라이버 간 비판/칭찬성 코멘트를 함께 띄운다.
-    const rivalry = Math.random()<0.45 ? this.generateRivalryNews() : null;
-    const rivalryCard = rivalry ? `<div class="interview-card" style="border-left:3px solid ${rivalry.tone==='critical'?'var(--red)':'var(--green)'};">
+    // 라이벌리 카드: 이번 레이스에서 실제로 여러 차례(2회+) 순위를 주고받은 진짜 배틀이 있었다면
+    // 그 결과를 우선 보여주고(승자 쪽 모럴 소폭 상승, 패자 쪽 소폭 하락), 없을 때만 기존처럼
+    // 무작위 패독 루머 속보(약 45% 확률)로 대체한다.
+    const raceRivalry = this.findRaceRivalryHighlight(standings);
+    let rivalryCard = '';
+    if(raceRivalry){
+      const { winnerName, loserName, count, winnerIsMine, loserIsMine, careerTotal } = raceRivalry;
+      if(winnerIsMine) winnerIsMine.morale = Math.min(100, winnerIsMine.morale+3);
+      if(loserIsMine) loserIsMine.morale = Math.max(0, loserIsMine.morale-2);
+      rivalryCard = `<div class="interview-card" style="border-left:3px solid var(--yellow);">
+        <div class="interview-head">🔥 오늘의 배틀</div>
+        <div class="interview-quote">${winnerName}과(와) ${loserName}이(가) 오늘 레이스에서 ${count}차례나 순위를 주고받는 접전을 벌인 끝에 ${winnerName}이(가) 앞서며 승리했습니다. (통산 맞대결 ${careerTotal}회째)</div>
+      </div>`;
+    } else {
+      const rivalry = Math.random()<0.45 ? this.generateRivalryNews() : null;
+      rivalryCard = rivalry ? `<div class="interview-card" style="border-left:3px solid ${rivalry.tone==='critical'?'var(--red)':'var(--green)'};">
         <div class="interview-head">📰 패독 속보</div>
         <div class="interview-quote">${rivalry.line}</div>
       </div>` : '';
+    }
     document.getElementById('interviewModalBody').innerHTML = `
       <h2>🎤 레이스 후 인터뷰</h2>
       ${cards}
@@ -5551,9 +6332,18 @@ const Game = {
     });
   },
 
-  // 챔피언십(GPDC/GPCC) 탭 렌더링 — 드라이버 22명과 팀 11개를 각각 누적 포인트 순으로 정렬
+  // 챔피언십(WDC/WCC) 탭 렌더링 — 드라이버 22명과 팀 11개를 각각 누적 포인트 순으로 정렬
   renderChampionship(){
     const myTeam = this.teams[this.playerTeamIdx];
+    // 팬 시스템 현황: 내가 운영하는 팀의 팬 수 + 내가 기용 중인 드라이버들의 팬 수를 한눈에 보여준다.
+    document.getElementById('fandomCard').innerHTML = `
+      <div class="fandom-card">
+        <h4>🎉 팬덤 현황</h4>
+        <div class="fandom-row"><span>${myTeam.name} 팀 팬</span><b>👥 ${Math.round(myTeam.fanCount||0).toLocaleString()}명</b></div>
+        ${myTeam.drivers.map(d=>`<div class="fandom-row"><span>${d.name} 개인 팬</span><b>👥 ${Math.round(d.fanCount||0).toLocaleString()}명</b></div>`).join('')}
+        <div class="fandom-row"><span>${this.managerName||'감독'} 감독 평판</span><b>⭐ ${Math.round(this.managerReputation)}/100</b></div>
+      </div>
+    `;
     const allDrivers = [];
     this.teams.forEach(team=> team.drivers.forEach(d=> allDrivers.push({d,team})));
     allDrivers.sort((a,b)=> b.d.champPoints - a.d.champPoints);
@@ -5587,22 +6377,22 @@ const Game = {
     }).join('');
   },
 
-  // 트로피 진열장: 커리어 전체에 걸쳐 획득한 GPDC/GPCC 우승과 개별 레이스 우승 이력을 보여준다.
+  // 트로피 진열장: 커리어 전체에 걸쳐 획득한 WDC/WCC 우승과 개별 레이스 우승 이력을 보여준다.
   renderTrophyCabinet(){
     const box = document.getElementById('trophyCabinetBody');
     if(!box) return;
     const wdcHtml = this.trophies.wdc.length
-      ? this.trophies.wdc.map(t=>`<div class="trophy-item">🏆 <b>${t.season}시즌</b> 드라이버 챔피언십(GPDC) 우승 — ${t.driver}</div>`).join('')
+      ? this.trophies.wdc.map(t=>`<div class="trophy-item">🏆 <b>${t.season}시즌</b> 드라이버 챔피언십(WDC) 우승 — ${t.driver}</div>`).join('')
       : `<p style="color:var(--text-2); font-size:12px;">아직 드라이버 챔피언십 우승 기록이 없습니다.</p>`;
     const wccHtml = this.trophies.wcc.length
-      ? this.trophies.wcc.map(t=>`<div class="trophy-item">🏆 <b>${t.season}시즌</b> 컨스트럭터 챔피언십(GPCC) 우승</div>`).join('')
+      ? this.trophies.wcc.map(t=>`<div class="trophy-item">🏆 <b>${t.season}시즌</b> 컨스트럭터 챔피언십(WCC) 우승</div>`).join('')
       : `<p style="color:var(--text-2); font-size:12px;">아직 컨스트럭터 챔피언십 우승 기록이 없습니다.</p>`;
     const winsHtml = this.trophies.raceWins.length
       ? this.trophies.raceWins.slice().reverse().map(w=>`<div class="trophy-item">🥇 <b>${w.season}시즌</b> ${w.track} — ${w.driver} 우승${w.fastestLap!=null?` · 최고 랩타임 <span style="color:var(--blue)">${formatLapTime(w.fastestLap)}</span>`:''}</div>`).join('')
       : `<p style="color:var(--text-2); font-size:12px;">아직 레이스 우승 기록이 없습니다.</p>`;
     box.innerHTML = `
-      <div class="card"><h4>🏆 드라이버 챔피언십(GPDC) 우승 이력</h4>${wdcHtml}</div>
-      <div class="card"><h4>🏆 컨스트럭터 챔피언십(GPCC) 우승 이력</h4>${wccHtml}</div>
+      <div class="card"><h4>🏆 드라이버 챔피언십(WDC) 우승 이력</h4>${wdcHtml}</div>
+      <div class="card"><h4>🏆 컨스트럭터 챔피언십(WCC) 우승 이력</h4>${wccHtml}</div>
       <div class="card" style="grid-column:1/-1;"><h4>🥇 레이스 우승 이력</h4>${winsHtml}</div>
     `;
   },
@@ -5617,6 +6407,42 @@ const Game = {
     box.innerHTML = this.hallOfFame.length
       ? this.hallOfFame.map(h=>`<div class="hof-card"><div class="hof-medal">${h.medal}</div><div><div class="hof-title">${h.title}</div><div class="hof-sub">${h.season}시즌 · ${h.sub}</div></div></div>`).join('')
       : `<p style="color:var(--text-2); font-size:12px;">아직 명예의 전당에 기록된 순간이 없습니다. 인상적인 레이스를 만들어보세요!</p>`;
+  },
+
+  // 감독 커리어 프로필: 지금까지 여러 탭에 흩어져 있던 감독 관련 수치(평판/전적/이력/팬덤)를
+  // 한 화면에 모아 보여준다. 새 데이터를 계산하지 않고 이미 다른 곳에서 관리되던 값을 그대로 읽는다.
+  renderCareerProfile(){
+    const myTeam = this.teams[this.playerTeamIdx];
+    const nat = MANAGER_NATIONALITIES.find(n=>n.code===this.managerNationality);
+    document.getElementById('careerManagerInfo').innerHTML = `
+      <div class="dm-basic"><span>이름 <b>${nat?nat.flag:''} ${this.managerName||'익명'}</b></span></div>
+      <div class="dm-basic"><span>현재 소속 <b>${myTeam.name}</b></span></div>
+      <div class="dm-basic"><span>시즌 <b>${this.season}</b></span></div>
+      <div class="dm-morale" style="margin-top:12px;">
+        <div class="mtitle">감독 평판</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${Math.round(this.managerReputation)}%; background:var(--yellow);"></div></div>
+        <div class="dm-sentiment" style="color:var(--yellow)">⭐ ${Math.round(this.managerReputation)}/100 (역대 최고 ${Math.round(this.peakReputation)})</div>
+      </div>
+      ${this.cheatMode ? `<div class="dm-basic" style="margin-top:10px;"><span>🎮 <b>치트 모드 활성</b></span></div>` : ''}
+    `;
+    const wins = this.trophies.raceWins.length;
+    const races = this.careerStats.racesCompleted;
+    const winRate = races>0 ? Math.round(wins/races*1000)/10 : 0;
+    document.getElementById('careerStatsBody').innerHTML = `
+      <div class="fandom-row"><span>통산 출전 레이스</span><b>${races}경기</b></div>
+      <div class="fandom-row"><span>통산 우승</span><b>🏆 ${wins}회</b></div>
+      <div class="fandom-row"><span>통산 포디움</span><b>🥉 ${this.careerStats.podiums}회</b></div>
+      <div class="fandom-row"><span>우승률</span><b>${winRate}%</b></div>
+      <div class="fandom-row"><span>WDC 우승</span><b>${this.trophies.wdc.length}회</b></div>
+      <div class="fandom-row"><span>WCC 우승</span><b>${this.trophies.wcc.length}회</b></div>
+    `;
+    document.getElementById('careerTeamHistoryBody').innerHTML = this.careerTeamHistory.length
+      ? this.careerTeamHistory.map(h=>`<div class="fandom-row"><span>${h.season}시즌</span><b>${h.teamName}</b></div>`).join('')
+      : `<p style="color:var(--text-2); font-size:12px;">아직 기록된 이력이 없습니다.</p>`;
+    document.getElementById('careerFandomBody').innerHTML = `
+      <div class="fandom-row"><span>${myTeam.name} 팀 팬</span><b>👥 ${Math.round(myTeam.fanCount||0).toLocaleString()}명</b></div>
+      ${myTeam.drivers.map(d=>`<div class="fandom-row"><span>${d.name} 개인 팬</span><b>👥 ${Math.round(d.fanCount||0).toLocaleString()}명</b></div>`).join('')}
+    `;
   },
 
   // 팀/드라이버 이름 자유 편집 — 저장/불러오기는 이름이 아니라 고정된 배열 순서로 매칭되므로
@@ -6083,6 +6909,184 @@ const Game = {
         this.saveGame();
       });
     });
+
+    // 시즌 중 타 팀 드라이버 오퍼: 대기 중/성사된 오퍼 현황 + 오퍼를 넣을 수 있는 팀별 접이식 목록.
+    // (오프시즌 전용 트레이드/즉시 영입과 달리, 여기서는 시즌 중 언제든 제안할 수 있고 결과도
+    // 다음 레이스 종료 시 갈리지만, 실제 로스터 합류는 항상 다음 시즌 시작 시점으로 미뤄진다.)
+    const pendingHtml = this.pendingSeasonOffers.map((o,i)=>
+      `<div class="season-offer-row"><span>${o.driverRef.name} (${this.teams[o.offerTeamIdx].name})${o.competitorCount?` <span style="color:var(--text-2);">· 경쟁 ${o.competitorCount}팀</span>`:''}</span><span class="sof-status pending">협상 중 — 다음 레이스 후 결과</span><button data-withdraw-offer="${i}" class="sof-withdraw">철회</button></div>`
+    ).join('');
+    const confirmedHtml = this.confirmedTransfers.map(o=>
+      `<div class="season-offer-row"><span>${o.driverRef.name} (${this.teams[o.offerTeamIdx].name})</span><span class="sof-status confirmed">✅ 다음 시즌 합류 확정</span></div>`
+    ).join('');
+    document.getElementById('seasonOfferPending').innerHTML = pendingHtml + confirmedHtml;
+    document.querySelectorAll('#seasonOfferPending button[data-withdraw-offer]').forEach(btn=>{
+      btn.addEventListener('click', ()=> this.withdrawSeasonOffer(parseInt(btn.dataset.withdrawOffer)));
+    });
+
+    const offeredDriverRefs = new Set([...this.pendingSeasonOffers, ...this.confirmedTransfers].map(o=>o.driverRef));
+    const otherTeamsForOffer = this.teams.filter(t=>t!==team);
+    document.getElementById('seasonOfferList').innerHTML = otherTeamsForOffer.map(t=>{
+      const ti = this.teams.indexOf(t);
+      const driverRows = t.drivers.map((rd,rslot)=>{
+        const already = offeredDriverRefs.has(rd);
+        return `<div class="rival-driver-row">
+          <div class="rdr-info">
+            <span class="rdr-name">${rd.name}${rd.role==='first'?' <span class="rdr-ace">에이스</span>':''}</span>
+            <span class="rdr-sub">OVR ${rd.overall()} · 잔여 계약 ${rd.contractYears}년</span>
+          </div>
+          <button data-season-offer="${ti}:${rslot}" ${already?'disabled':''}>${already?'제안됨':'오퍼 넣기'}</button>
+        </div>`;
+      }).join('');
+      return `<details class="rival-team-group">
+        <summary><span class="rtg-dot" style="background:${t.color}"></span>${t.name} <span class="rtg-tier">${t.tier}등급</span></summary>
+        ${driverRows}
+      </details>`;
+    }).join('');
+    document.querySelectorAll('#seasonOfferList button[data-season-offer]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const [ti, rslot] = btn.dataset.seasonOffer.split(':').map(Number);
+        this.openSeasonOffer(ti, rslot);
+      });
+    });
+  },
+  openSeasonOffer(ti, rslot){
+    const rivalTeam = this.teams[ti];
+    const driver = rivalTeam.drivers[rslot];
+    const salary = calcSalary(driver);
+    const mySlotOptions = this.teams[this.playerTeamIdx].drivers.map((d,si)=>`<option value="${si}">${d.name} (${d.role==='first'?'에이스':'세컨드'}) 대체</option>`).join('');
+    document.getElementById('seasonOfferBody').innerHTML = `
+      <h2>${driver.name}</h2>
+      <div class="dm-team">#${driver.number} · ${rivalTeam.name} ${driver.role==='first'?'<span class="rdr-ace">에이스</span>':''}</div>
+      <div class="dm-basic"><span>OVR <b>${driver.overall()}</b></span><span>나이 <b>${driver.age}세</b></span><span>잔여 계약 <b>${driver.contractYears}년</b></span><span>예상 연봉 <b>${salary}M$</b></span></div>
+      <p style="color:var(--text-2); font-size:11px; line-height:1.6; margin-top:10px;">지금 오퍼를 넣으면 다음 레이스가 끝난 뒤 성사 여부가 정해집니다. 성사되더라도 시즌 중에는 로스터가 바뀌지 않고, 다음 시즌이 시작될 때 자연스럽게 합류합니다.</p>
+      <div class="rn-row" style="margin-top:12px;">
+        <select id="soMySlot">${mySlotOptions}</select>
+        <select id="soYears"><option value="1">1년</option><option value="2" selected>2년</option><option value="3">3년</option><option value="4">4년</option></select>
+        <input type="number" id="soSalary" value="${salary}" min="0.5" step="0.5">
+        <button id="soSubmitBtn">오퍼 제출</button>
+      </div>
+    `;
+    document.getElementById('soSubmitBtn').addEventListener('click', ()=>{
+      const mySlot = parseInt(document.getElementById('soMySlot').value);
+      const years = parseInt(document.getElementById('soYears').value);
+      const offeredSalary = Math.max(0.5, parseFloat(document.getElementById('soSalary').value)||salary);
+      this.submitSeasonOffer(ti, rslot, mySlot, offeredSalary, years);
+    });
+    document.getElementById('seasonOfferOverlay').classList.add('show');
+  },
+  closeSeasonOffer(){ document.getElementById('seasonOfferOverlay').classList.remove('show'); },
+  submitSeasonOffer(ti, rslot, mySlot, offeredSalary, offeredYears){
+    const rivalTeam = this.teams[ti];
+    const myTeam = this.teams[this.playerTeamIdx];
+    const driver = rivalTeam.drivers[rslot];
+    if(!driver) return;
+    if(this.pendingSeasonOffers.some(o=>o.driverRef===driver) || this.confirmedTransfers.some(o=>o.driverRef===driver)) return;
+    // 경쟁 오퍼: 실력 좋은(탐나는) 드라이버일수록 다른 팀도 함께 눈독 들이고 있을 확률이 높다(최대 2팀).
+    // 값 자체는 오퍼를 넣는 시점에 미리 정해두고, 실제 성사 판정(resolveSeasonOffers)에서 확률을 깎는 데 쓴다.
+    const desirability = Math.max(0, Math.min(1, (driver.overall()-70)/30));
+    let competitorCount = 0;
+    if(Math.random() < 0.25+desirability*0.35) competitorCount++;
+    if(competitorCount>0 && Math.random() < 0.15+desirability*0.25) competitorCount++;
+    this.pendingSeasonOffers.push({ offerTeamIdx: ti, driverRef: driver, mySlot, offeredSalary, offeredYears, competitorCount });
+    this.addMail('이적 시장', `[오퍼 발송] ${driver.name}`,
+      `${rivalTeam.name} 소속 ${driver.name} 선수에게 오퍼(${offeredYears}년 · ${offeredSalary}M$)를 전달했습니다.\n다음 레이스가 끝나면 결과를 알려드리겠습니다.`);
+    // 오퍼 유출: 일정 확률로 기자가 소식을 포착해 보도한다. 소식이 새어나가면 대상 드라이버에게
+    // 이런저런 시선이 쏠리면서 소속팀과의 관계가 미묘하게 불편해져(사기 소폭 하락) — 아이러니하게도
+    // poachAcceptChance 공식상 이적 의사가 살짝 높아지는 효과로 이어진다.
+    if(Math.random() < 0.4){
+      const j = randomJournalist();
+      driver.morale = Math.max(0, driver.morale - (2+Math.random()*4));
+      const competitorLine = competitorCount>0 ? ` 이미 ${competitorCount}개 팀이 함께 눈독 들이고 있다는 이야기도 들립니다.` : '';
+      this.addMail(`${j} 기자`, `[특종] ${driver.name}, 이적설 포착`,
+        `[${j} 기자] ${rivalTeam.name}의 ${driver.name} 선수에게 ${myTeam.name}이(가) 관심을 보이고 있다는 소식이 포착됐습니다.${competitorLine}\n선수 본인도 이 소식을 접한 것으로 보입니다.`, 'rumor');
+    }
+    this.closeSeasonOffer();
+    this.renderTransfer();
+    this.saveGame();
+  },
+  // 대기 중인(아직 결과가 나오지 않은) 오퍼를 철회한다. 위약금 등의 페널티는 없다.
+  withdrawSeasonOffer(idx){
+    const o = this.pendingSeasonOffers[idx];
+    if(!o) return;
+    this.pendingSeasonOffers.splice(idx,1);
+    this.addMail('이적 시장', `[오퍼 철회] ${o.driverRef.name}`, `${o.driverRef.name} 선수에게 넣었던 오퍼를 철회했습니다.`);
+    this.renderTransfer();
+    this.saveGame();
+  },
+  // 매 레이스 종료 직후(proceedAfterRace) 호출 — 대기 중인 시즌 오퍼의 성사 여부를 그 자리에서 굴린다.
+  // 성사되어도 로스터는 즉시 바뀌지 않고 confirmedTransfers로 옮겨져, 다음 시즌 시작 시(FP1) 한꺼번에 적용된다.
+  resolveSeasonOffers(){
+    if(!this.pendingSeasonOffers.length) return;
+    const myTeam = this.teams[this.playerTeamIdx];
+    this.pendingSeasonOffers.forEach(o=>{
+      const rivalTeam = this.teams[o.offerTeamIdx];
+      // 대상 드라이버가 이미 다른 경로로(트레이드/은퇴 등) 그 팀을 떠났다면 오퍼는 자동 무산된다.
+      if(!rivalTeam.drivers.includes(o.driverRef)){
+        this.addMail('이적 시장', `[오퍼 무산] ${o.driverRef.name}`, `${o.driverRef.name} 선수가 이미 다른 팀으로 이적해 오퍼가 무산되었습니다.`);
+        return;
+      }
+      // 경쟁 중인 팀이 많을수록(제출 시점에 정해둔 competitorCount) 성사 확률이 깎인다.
+      const baseChance = poachAcceptChance(myTeam, rivalTeam, o.driverRef, o.offeredSalary, o.offeredYears);
+      const chance = Math.max(0.02, baseChance - (o.competitorCount||0)*0.12);
+      if(this.cheatMode || Math.random() < chance){
+        this.confirmedTransfers.push(o);
+        this.addMail('이적 시장', `[오퍼 성사] ${o.driverRef.name}`,
+          `${o.driverRef.name} 선수가 ${myTeam.name}의 오퍼(${o.offeredYears}년 · ${o.offeredSalary}M$)에 합의했습니다!\n이번 시즌이 끝나고 다음 시즌부터 합류합니다.`, 'breaking');
+      } else {
+        this.addMail('이적 시장', `[오퍼 거절] ${o.driverRef.name}`,
+          `${o.driverRef.name} 선수가 ${myTeam.name}의 오퍼(${o.offeredYears}년 · ${o.offeredSalary}M$)를 거절했습니다.`);
+      }
+    });
+    this.pendingSeasonOffers = [];
+    this.renderTransfer();
+    this.saveGame();
+  },
+  // 다음 시즌 첫 FP1 시점(applyPendingTeamSwitch와 동일한 안전한 타이밍)에 호출 — 시즌 중 성사된
+  // 오퍼들을 실제 로스터에 반영한다. proposePoach()와 동일한 처리(상대팀 백필 포함)를 재사용한다.
+  applyConfirmedTransfers(){
+    if(!this.confirmedTransfers.length) return;
+    const myTeam = this.teams[this.playerTeamIdx];
+    this.confirmedTransfers.forEach(o=>{
+      const rivalTeam = this.teams[o.offerTeamIdx];
+      const driver = o.driverRef;
+      if(!rivalTeam.drivers.includes(driver)){
+        this.addMail('이적 시장', `[합류 무산] ${driver.name}`, `${driver.name} 선수가 이미 다른 팀으로 이적해 합류가 무산되었습니다.`);
+        return;
+      }
+      if(myTeam.budget < o.offeredSalary){
+        this.addMail('이적 시장', `[합류 무산] ${driver.name}`, `예산이 부족해 ${driver.name} 선수와의 계약을 완료하지 못했습니다. (필요 연봉 ${o.offeredSalary}M$)`);
+        return;
+      }
+      const rslot = rivalTeam.drivers.indexOf(driver);
+      myTeam.budget -= o.offeredSalary;
+      driver.contractYears = o.offeredYears; driver.contractSalary = o.offeredSalary;
+      const replacedMid = myTeam.drivers[o.mySlot];
+      driver.role = replacedMid ? replacedMid.role : 'second';
+      myTeam.drivers[o.mySlot] = driver;
+      let rivalReplacement = null;
+      if(rivalTeam.reserves && rivalTeam.reserves.length){
+        rivalReplacement = rivalTeam.reserves.shift();
+        rivalReplacement.role = driver.role==='first'?'second':'first';
+        rivalReplacement.contractYears = 2; rivalReplacement.contractSalary = calcSalary(rivalReplacement);
+      } else {
+        if(!this.marketPool) this.marketPool = [];
+        const emergency = this.marketPool.find(x=>x!==driver);
+        if(emergency){
+          const idx = this.marketPool.indexOf(emergency);
+          this.marketPool.splice(idx,1);
+          emergency.role = driver.role==='first'?'second':'first';
+          emergency.contractYears = 1; emergency.contractSalary = calcSalary(emergency);
+          rivalReplacement = emergency;
+        }
+      }
+      rivalTeam.drivers[rslot] = rivalReplacement || rivalTeam.drivers[rslot];
+      if(!myTeam.reserves) myTeam.reserves = [];
+      if(replacedMid) myTeam.reserves.push(replacedMid);
+      this.addMail('이사회', `[합류 완료] ${driver.name}`,
+        `지난 시즌 성사된 오퍼에 따라 ${driver.name} 선수가 ${myTeam.name}에 정식 합류했습니다!${replacedMid?` ${replacedMid.name} 선수는 리저브로 전환됩니다.`:''}`, 'breaking');
+    });
+    this.confirmedTransfers = [];
   },
 
   /* ---------------- 드라이버 훈련 탭 ---------------- */
@@ -6214,8 +7218,8 @@ const Game = {
       }).join('');
       const cost = f2Cost(d);
       const f2Section = d.f2Enrolled
-        ? `<div class="csub" style="margin:8px 0;">🏁 PDS 시즌 참가중 · 누적 <b style="color:var(--yellow)">${d.f2Points||0}pt</b><br><span style="color:var(--text-2); font-size:10px;">매 레이스 주말마다 자동으로 결과가 반영되어 성장합니다.</span></div>`
-        : `<button class="callup" data-f2enroll="${di}" style="width:100%; margin:8px 0;">🏁 PDS 시즌 투자 (${cost}M$)</button>`;
+        ? `<div class="csub" style="margin:8px 0;">🏁 F2 시즌 참가중 · 누적 <b style="color:var(--yellow)">${d.f2Points||0}pt</b><br><span style="color:var(--text-2); font-size:10px;">매 레이스 주말마다 자동으로 결과가 반영되어 성장합니다.</span></div>`
+        : `<button class="callup" data-f2enroll="${di}" style="width:100%; margin:8px 0;">🏁 F2 시즌 투자 (${cost}M$)</button>`;
       return `<div class="card">
         <h4>${d.name} <span class="academy-potential">POT ${d.potential} · ${d.age}세</span></h4>
         ${rows}
@@ -6246,7 +7250,7 @@ const Game = {
         if(team.budget < cost){ alert('예산이 부족합니다. (필요 투자금 '+cost+'M$)'); return; }
         team.budget -= cost;
         d.f2Enrolled = true; d.f2Investment = cost; d.f2Points = d.f2Points||0;
-        this.addMail('아카데미', `[PDS 시즌 참가] ${d.name}`, `${d.name} 선수가 이번 시즌 PDS 챔피언십에 참가합니다(투자금 ${cost}M$). 매 레이스 주말마다 자동으로 경기 결과가 반영되어 성장합니다.`);
+        this.addMail('아카데미', `[F2 시즌 참가] ${d.name}`, `${d.name} 선수가 이번 시즌 F2 챔피언십에 참가합니다(투자금 ${cost}M$). 매 레이스 주말마다 자동으로 경기 결과가 반영되어 성장합니다.`);
         this.renderAcademy(); this.renderTransfer(); this.saveGame();
       });
     });
@@ -6329,6 +7333,14 @@ const Game = {
     document.getElementById('driverModalOverlay').addEventListener('click', (e)=>{
       if(e.target.id==='driverModalOverlay') this.closeDriverModal();
     });
+    document.getElementById('rivalNegotiateClose').addEventListener('click', ()=> this.closeRivalNegotiation());
+    document.getElementById('rivalNegotiateOverlay').addEventListener('click', (e)=>{
+      if(e.target.id==='rivalNegotiateOverlay') this.closeRivalNegotiation();
+    });
+    document.getElementById('seasonOfferClose').addEventListener('click', ()=> this.closeSeasonOffer());
+    document.getElementById('seasonOfferOverlay').addEventListener('click', (e)=>{
+      if(e.target.id==='seasonOfferOverlay') this.closeSeasonOffer();
+    });
   },
   moraleSentiment(m){
     if(m>=75) return {text:'😊 만족 — 팀에 매우 만족하고 있습니다.', color:'var(--green)'};
@@ -6345,12 +7357,18 @@ const Game = {
       ['타이어 관리', s.tireManagement], ['안정성', s.consistency], ['경험치', s.experience],
       ['반응속도', s.reaction],
     ].map(([lbl,val])=>`<div class="dm-stat"><div class="lbl">${lbl}</div><div class="bar-track"><div class="bar-fill fill-dur" style="width:${val}%"></div></div><div class="val">${val}</div></div>`).join('');
+    // 통산 휠투휠 맞대결 횟수가 가장 많은 상대를 "최대 라이벌"로 짚어준다(2회 미만이면 아직 유의미한 라이벌 없음).
+    const rivalEntries = Object.entries(driver.rivalryTotals||{}).sort((a,b)=>b[1]-a[1]);
+    const topRival = rivalEntries.length && rivalEntries[0][1]>=2 ? rivalEntries[0] : null;
+    const rivalRow = topRival ? `<div class="dm-basic"><span>🔥 최대 라이벌 <b>${topRival[0]}</b> (통산 ${topRival[1]}회 격돌)</span></div>` : '';
 
     document.getElementById('driverModalBody').innerHTML = `
       <h2>${driver.name}</h2>
       <div class="dm-team">#${driver.number} · ${team.name}</div>
+      <div class="dm-fans">👥 팬 ${Math.round(driver.fanCount||0).toLocaleString()}명</div>
       <div class="dm-basic"><span>나이 <b>${driver.age}세</b></span><span>신장 <b>${driver.height}cm</b></span><span>예상 연봉 <b>${calcSalary(driver)}M$</b></span></div>
       <div class="dm-basic"><span>계약 잔여기간 <b>${driver.contractYears>0?driver.contractYears+'년':'자유계약'}</b></span><span>계약 연봉 <b>${driver.contractSalary||0}M$</b></span></div>
+      ${rivalRow}
       ${statRows}
       <div class="dm-morale">
         <div class="mtitle">팀에 대한 감정 상태</div>
@@ -6361,6 +7379,119 @@ const Game = {
     document.getElementById('driverModalOverlay').classList.add('show');
   },
   closeDriverModal(){ document.getElementById('driverModalOverlay').classList.remove('show'); },
+
+  /* ---------------- 타 팀 드라이버 협상 팝업 (트레이드 / 직접 영입 통합) ---------------- */
+  openRivalNegotiation(ti, rslot){
+    const team = this.teams[this.playerTeamIdx];
+    const rivalTeam = this.teams[ti];
+    const driver = rivalTeam.drivers[rslot];
+    const salary = calcSalary(driver);
+    const mySlotOptions = team.drivers.map((d,si)=>`<option value="${si}">${d.name} (${d.role==='first'?'에이스':'세컨드'}) 대체</option>`).join('');
+    document.getElementById('rivalNegotiateBody').innerHTML = `
+      <h2>${driver.name}</h2>
+      <div class="dm-team">#${driver.number} · ${rivalTeam.name} ${driver.role==='first'?'<span class="rdr-ace">에이스</span>':''}</div>
+      <div class="dm-basic"><span>OVR <b>${driver.overall()}</b></span><span>나이 <b>${driver.age}세</b></span><span>잔여 계약 <b>${driver.contractYears}년</b></span><span>예상 연봉 <b>${salary}M$</b></span></div>
+
+      <div class="rn-section">
+        <h4>① 트레이드 제안</h4>
+        <p class="rn-hint">내 드라이버 한 명과 맞바꾼다. 상대 드라이버 실력이 크게 앞서면 성사 확률이 낮다.</p>
+        <div class="rn-row">
+          <select id="rnTradeOfferSlot">${mySlotOptions}</select>
+          <button id="rnTradeBtn">트레이드 제안</button>
+        </div>
+      </div>
+
+      <div class="rn-section">
+        <h4>② 직접 영입 제안</h4>
+        <p class="rn-hint">내 드라이버를 내주지 않고 연봉·계약 기간만 제시해 설득한다.</p>
+        <div class="rn-row">
+          <select id="rnPoachSlot">${mySlotOptions}</select>
+          <select id="rnPoachYears">
+            <option value="1">1년</option><option value="2" selected>2년</option><option value="3">3년</option><option value="4">4년</option>
+          </select>
+          <input type="number" id="rnPoachSalary" value="${salary}" min="0.5" step="0.5">
+          <button id="rnPoachBtn">영입 제안</button>
+        </div>
+      </div>
+    `;
+    document.getElementById('rnTradeBtn').addEventListener('click', ()=>{
+      const mySlot = parseInt(document.getElementById('rnTradeOfferSlot').value);
+      this.proposeTrade(ti, rslot, mySlot);
+    });
+    document.getElementById('rnPoachBtn').addEventListener('click', ()=>{
+      const mySlot = parseInt(document.getElementById('rnPoachSlot').value);
+      const years = parseInt(document.getElementById('rnPoachYears').value);
+      const offeredSalary = Math.max(0.5, parseFloat(document.getElementById('rnPoachSalary').value)||salary);
+      this.proposePoach(ti, rslot, mySlot, offeredSalary, years);
+    });
+    document.getElementById('rivalNegotiateOverlay').classList.add('show');
+  },
+  closeRivalNegotiation(){ document.getElementById('rivalNegotiateOverlay').classList.remove('show'); },
+  proposeTrade(ti, rslot, mySlot){
+    const team = this.teams[this.playerTeamIdx];
+    const rivalTeam = this.teams[ti];
+    const requestedDriver = rivalTeam.drivers[rslot];
+    const offeredDriver = team.drivers[mySlot];
+    const chance = tradeSuccessChance(offeredDriver, requestedDriver);
+    if(!this.cheatMode && Math.random() > chance){
+      this.addMail('이적 시장', `[트레이드 거절] ${rivalTeam.name}`,
+        `${rivalTeam.name}이(가) ${offeredDriver.name} ↔ ${requestedDriver.name} 트레이드 제안을 거절했습니다.\n"우리 선수의 가치에 비해 제안이 부족하다"는 입장입니다.`);
+      this.closeRivalNegotiation();
+      this.renderOffseasonBody();
+      return;
+    }
+    team.drivers[mySlot] = requestedDriver;
+    rivalTeam.drivers[rslot] = offeredDriver;
+    requestedDriver.role = offeredDriver.role; requestedDriver.contractYears = 2; requestedDriver.contractSalary = calcSalary(requestedDriver);
+    offeredDriver.role = 'second'; offeredDriver.contractYears = 2; offeredDriver.contractSalary = calcSalary(offeredDriver);
+    this.addMail('이사회', `[트레이드 성사] ${requestedDriver.name}`,
+      `${rivalTeam.name}과(와)의 트레이드가 성사되어 ${requestedDriver.name} 선수를 영입하고, ${offeredDriver.name} 선수를 내주었습니다.`, 'breaking');
+    this.closeRivalNegotiation();
+    this.renderOffseasonBody(); this.renderTransfer(); this.saveGame();
+  },
+  proposePoach(ti, rslot, mySlot, offeredSalary, offeredYears){
+    const team = this.teams[this.playerTeamIdx];
+    const rivalTeam = this.teams[ti];
+    const targetDriver = rivalTeam.drivers[rslot];
+    if(team.budget < offeredSalary){ alert('예산이 부족합니다. (제시 연봉 '+offeredSalary+'M$)'); return; }
+    const chance = poachAcceptChance(team, rivalTeam, targetDriver, offeredSalary, offeredYears);
+    if(!this.cheatMode && Math.random() > chance){
+      this.addMail('이적 시장', `[영입 거절] ${targetDriver.name}`,
+        `${targetDriver.name} 선수가 ${team.name}의 영입 제안(${offeredYears}년 · ${offeredSalary}M$)을 거절했습니다.\n"현재 팀과의 계약을 지키고 싶다"는 입장을 대리인을 통해 전해왔습니다.`);
+      this.closeRivalNegotiation();
+      this.renderOffseasonBody();
+      return;
+    }
+    team.budget -= offeredSalary;
+    targetDriver.contractYears = offeredYears; targetDriver.contractSalary = offeredSalary;
+    const replacedMid = team.drivers[mySlot];
+    targetDriver.role = replacedMid.role;
+    team.drivers[mySlot] = targetDriver;
+    // 원래 소속팀의 공석은 리저브 우선 승격, 없으면 자유계약 시장에서 긴급 영입으로 채운다.
+    let rivalReplacement = null;
+    if(rivalTeam.reserves && rivalTeam.reserves.length){
+      rivalReplacement = rivalTeam.reserves.shift();
+      rivalReplacement.role = targetDriver.role==='first'?'second':'first';
+      rivalReplacement.contractYears = 2; rivalReplacement.contractSalary = calcSalary(rivalReplacement);
+    } else {
+      if(!this.marketPool) this.marketPool = [];
+      const emergency = this.marketPool.find(x=>x!==targetDriver);
+      if(emergency){
+        const idx = this.marketPool.indexOf(emergency);
+        this.marketPool.splice(idx,1);
+        emergency.role = targetDriver.role==='first'?'second':'first';
+        emergency.contractYears = 1; emergency.contractSalary = calcSalary(emergency);
+        rivalReplacement = emergency;
+      }
+    }
+    rivalTeam.drivers[rslot] = rivalReplacement || rivalTeam.drivers[rslot];
+    if(!team.reserves) team.reserves = [];
+    team.reserves.push(replacedMid);
+    this.addMail('이사회', `[영입 성사] ${targetDriver.name}`,
+      `${rivalTeam.name} 소속이었던 ${targetDriver.name} 선수 영입에 성공했습니다(${offeredYears}년 · ${offeredSalary}M$)!\n${replacedMid.name} 선수는 리저브로 전환됩니다.${rivalReplacement?` ${rivalTeam.name}은(는) 공석을 ${rivalReplacement.name} 선수로 채웠습니다.`:''}`, 'breaking');
+    this.closeRivalNegotiation();
+    this.renderOffseasonBody(); this.renderTransfer(); this.saveGame();
+  },
 
   /* ---------------- 메일함 ---------------- */
   seedMails(){
@@ -6409,7 +7540,11 @@ const Game = {
     document.getElementById('mail-reader').innerHTML =
       `<h3>${m.subject}</h3><div class="meta">보낸사람: ${m.from} · ${m.date}</div><div style="white-space:pre-line; line-height:1.6; font-size:13px;">${m.body}</div>${choicesHtml}`;
     document.querySelectorAll('#mail-reader .mail-reply-btn').forEach(btn=>{
-      btn.addEventListener('click', ()=> this.resolveTauntMail(parseInt(btn.dataset.mailI), btn.dataset.choiceKey));
+      btn.addEventListener('click', ()=>{
+        const mi = parseInt(btn.dataset.mailI), key = btn.dataset.choiceKey;
+        if(m.kind==='managerOffer') this.resolveManagerJobOffer(mi, key);
+        else this.resolveTauntMail(mi, key);
+      });
     });
   },
   // 라이벌 팀 감독/기자의 도발 메일 — 확률적으로 생성되며, 답장 선택(강하게 대응/위트있게/무시)에
